@@ -1,5 +1,5 @@
 # Webina Backend API
-Webina Backend API
+Webinar Backend API
 
 
 ## 구동 방법
