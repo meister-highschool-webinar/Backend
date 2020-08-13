@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node webinar-api/bin/www"
+    "start": "node webinar-api/bin/www",
+    "dev": "nodemon --watch 'webinar-api/**/*' webinar-api/bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -14,5 +15,8 @@
     "mariadb": "^2.4.2",
     "morgan": "~1.9.1",
     "sequelize": "^6.3.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
