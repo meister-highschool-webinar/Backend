@@ -15,6 +15,7 @@ let router = express.Router();
  *       - schoolName
  *       - grade
  *       - class
+ *       - number
  *       - studentId
  *       - studentName
  *     properties:
@@ -27,6 +28,9 @@ let router = express.Router();
  *       class:
  *         type: integer
  *         description: 반
+ *       number:
+ *         type: integer
+ *         description: 번호
  *       studentId:
  *         type: integer
  *         description: 학생 번호
@@ -100,7 +104,8 @@ router.post('/login', async function(req, res, next) {
     grade = 0, 
     class: _class = 0, 
     studentId: student_id = 0, 
-    studentName: student_name = ""
+    studentName: student_name = "",
+    number = 0
   } = req.body;
 
   try {
