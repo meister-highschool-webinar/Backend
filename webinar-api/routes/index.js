@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var auth = require('./auth');
-const docs = require('./docs');
+let express = require('express');
+let router = express.Router();
+let auth = require('./auth');
+let docs = require('./docs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

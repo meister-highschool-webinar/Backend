@@ -1,7 +1,7 @@
-const express = require('express');
-const db = require('../../models/index');
-const jwt = require('jsonwebtoken');
-const router = express.Router();
+let express = require('express');
+let db = require('../../models/index');
+let jwt = require('jsonwebtoken');
+let router = express.Router();
 
 /**
  * @swagger
@@ -108,11 +108,12 @@ router.post('/login', async function(req, res, next) {
       where: {
         school_name,
         grade,
+        number,
         class: _class,
         student_id,
         student_name
       },
-      attributes: ['school_name', 'id', 'student_id', 'student_name']
+      attributes: ['school_name', 'id', 'student_id', 'student_name', 'number']
     });
 
     if(result === null) throw new Error("공란이 존재하거나 유효하지 않은 사용자 정보입니다.");
