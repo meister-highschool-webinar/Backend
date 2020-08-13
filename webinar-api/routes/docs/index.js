@@ -6,7 +6,7 @@ const swaggerDefinition = {
   info: {
     title: 'Webinar API',
     version: '1.0.0',
-    description: '마이스터고 웨비나의 개발을 위해 사용될 API입니다.'
+    description: '마이스터고 웨비나의 개발에 사용될 API입니다.'
   },
   basePath: '/api'
 }
