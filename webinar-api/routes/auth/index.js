@@ -121,7 +121,9 @@ router.post('/login', async function(req, res, next) {
       attributes: ['school_name', 'id', 'student_id', 'student_name', 'number']
     });
 
-    if(result === null) throw new Error("공란이 존재하거나 유효하지 않은 사용자 정보입니다.");
+    if(result === null) return res.status(400).send({
+      message: "공백이거나, 유효하지 않는 사용자입니다."
+    });
 
     const accessToken = jwt.sign({
       ...result.dataValues 
@@ -136,8 +138,8 @@ router.post('/login', async function(req, res, next) {
     res.status(200).send(responseData)
   }
   catch(error) {
-    res.status(401).send({
-      message: error.message
+    res.status(500).send({
+      message: "서버에서 오류가 발생하였습니다."
     })
   }
 });
