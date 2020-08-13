@@ -108,8 +108,8 @@ router.post('/login', async function(req, res, next) {
       where: {
         school_name,
         grade,
-        number,
         class: _class,
+        number,
         student_id,
         student_name
       },
