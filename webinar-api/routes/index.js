@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const { Router } = require('express');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const {getTimetable} = require("../controllers/timetable.controller");
+
+const router = Router();
+
+router.get('/timetable-list', getTimetable);
 
 module.exports = router;
