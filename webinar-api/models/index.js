@@ -1,7 +1,4 @@
-var dotenv = require('dotenv');
-dotenv.config();
-
-const Sequelize = require('sequelize')
+let Sequelize = require('sequelize')
 
 const sequelize = new Sequelize(
   process.env.MARIADB_DATABASE,
