@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node webinar-api/bin/www",
-    "dev": "nodemon --watch 'webinar-api/**/*' webinar-api/bin/www"
+    "start": "yarn nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -15,10 +14,10 @@
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.4.2",
     "morgan": "~1.9.1",
+    "nodemon": "^2.0.4",
     "sequelize": "^6.3.4",
-    "swagger-ui-express": "^4.1.4"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.4"
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4",
+    "yarn": "^1.22.4"
   }
 }

@@ -1,21 +1,22 @@
 const { Sequelize } = require('sequelize');
-
 const Timetable = require('./Timetable')
 
-const sequelize = new Sequelize({
-    username: process.env.DATABASE_ID,
-    password: process.env.DATABASE_PW,
-    database: process.env.DATABASE_NAME,
-    host: process.env.DATABASE_HOST,
-    dialect: 'mariadb',
-    dialectOptions: {
-        timezone: 'Etc/GMT-9'
+
+const sequelize = new Sequelize(
+  process.env.MARIADB_DATABASE,
+  process.env.MARIADB_ID,
+  process.env.MARIADB_PASSWORD,
+  {
+    'host': process.env.MARIADB_IP,
+    'dialect': 'mariadb',
+    'define': {
+      freezeTableName: true,
+      timestamps: false
     }
-});
+  }
+)
 
+const user = require('./user/index')(sequelize, Sequelize);
 const timetable = Timetable(sequelize);
-
-module.exports = {
-    sequelize,
-    timetable
-};
+const db = { Sequelize, sequelize, user, timetable }
+module.exports = db
