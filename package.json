@@ -16,6 +16,7 @@
     "mariadb": "^2.4.2",
     "morgan": "~1.9.1",
     "sequelize": "^6.3.4",
+    "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
