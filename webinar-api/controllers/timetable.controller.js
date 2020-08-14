@@ -7,6 +7,6 @@ exports.getTimetable = async (req, res) => {
         });
         res.send({timeTableList: timetables});
     } catch (e) {
-        res.throw(500);
+        res.sendStatus(500);
     }
 }
