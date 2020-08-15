@@ -11,8 +11,8 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   name: Timetable
- *   description: 웨비나 시간표
+ *   name: Webinar
+ *   description: 웨비나 진행 관련 API
  * definitions:
  *   timetable_list:
  *     type: array
@@ -46,7 +46,7 @@ router.use('/docs', docs)
  *    /timetable-list:
  *      get:
  *        tags:
- *        - "Timetable"
+ *        - "Webinar"
  *        summary: "웨비나 시간표 조회"
  *        description: "웨비나 시간표 목록을 가져옵니다."
  *        produces:
