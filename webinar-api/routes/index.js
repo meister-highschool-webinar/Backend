@@ -4,6 +4,7 @@ const auth = require('./auth');
 const docs = require('./docs');
 
 const { getTimetable } = require("../controllers/timetable.controller");
+const {getWebinar} = require("../controllers/webinar.controller");
 
 const router = Router();
 
@@ -60,5 +61,7 @@ router.use('/docs', docs)
  *            description: "DB 연결 에러"
  */
 router.get('/timetable-list', getTimetable);
+
+router.get('/webinar-info/:id', getWebinar)
 
 module.exports = router;
