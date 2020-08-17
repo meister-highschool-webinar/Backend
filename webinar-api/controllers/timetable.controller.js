@@ -10,3 +10,56 @@ exports.getTimetable = async (req, res) => {
         res.sendStatus(500);
     }
 }
+
+exports.inputTimetable = async(req, res) => {
+    const { tableList } = req.body;
+
+    try {
+        const flag = tableList.every(tableInfo => {
+            const {
+                track,
+                speech,
+                startTime,
+                endTime
+            } = tableInfo;
+
+            if(track === undefined || speech === undefined || startTime === undefined || endTime === undefined) {
+                res.status(400).send({
+                    msg: '입력된 항목에 공백이 존재합니다.',
+                    msgId: 400
+                })
+                return false;
+            }
+
+            return true;
+        })
+
+        if(!flag) return;
+
+        await Promise.all(
+            tableList.map(async tableInfo => {
+                const {
+                    track: track_name,
+                    speech,
+                    startTime: start_time,
+                    endTime : end_time
+                } = tableInfo;
+
+                await timetable.create({
+                    track_name,
+                    speech,
+                    start_time,
+                    end_time
+                })
+            })
+        )
+
+        res.send({
+            msg: '성공적으로 타임 테이블을 입력하였습니다.',
+            msgId: 200
+        })
+    }
+    catch (e) {
+        res.sendStatus(500);
+    }
+}

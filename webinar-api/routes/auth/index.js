@@ -1,7 +1,11 @@
-let express = require('express');
-let db = require('../../models/index');
-let jwt = require('jsonwebtoken');
-let router = express.Router();
+const { Router } = require('express');
+
+const { login } = require('../../controllers/login.controller');
+const { inputTimetable } = require('../../controllers/timetable.controller');
+
+const { auth } = require('../../middlewares/auth.middle');
+
+const router = Router();
 
 /**
  * @swagger
@@ -98,50 +102,67 @@ let router = express.Router();
  *              $ref: "#/definitions/Response_error"
  */
 
-router.post('/login', async function(req, res, next) {
-  const { 
-    schoolName: school_name = "", 
-    grade = 0, 
-    class: _class = 0, 
-    studentId: student_id = 0, 
-    studentName: student_name = "",
-    number = 0
-  } = req.body;
+ router.post('/login', login);
 
-  try {
-    const result = await db.user.findOne({
-      where: {
-        school_name,
-        grade,
-        class: _class,
-        number,
-        student_id,
-        student_name
-      },
-      attributes: ['school_name', 'id', 'student_id', 'student_name', 'number']
-    });
+/**
+ * @swagger
+ * tags:
+ *   name: Timetable
+ *   description: 웨비나 시간표 입력
+ * definitions:
+ *   timetable_list:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/timetable_item'
+ *   timetable_item:
+ *     type: object
+ *     properties:
+ *       track_name:
+ *         type: string
+ *         description: 트랙 이름
+ *       speech:
+ *         type: string
+ *         description: 발표자
+ *       start_time:
+ *         type: string
+ *         format: date-time
+ *         description: 트랙 시작 시간
+ *       end_time:
+ *         type: string
+ *         format: date-time
+ *         description: 트랙 종료 시간
+ */
 
-    if(result === null) return res.status(400).send({
-      message: "공백이거나, 유효하지 않는 사용자입니다."
-    });
+/**
+ * @swagger
+ *  paths:
+ *    /auth/timetable:
+ *      post:
+ *        tags:
+ *        - "Timetable"
+ *        summary: "웨비나 시간표 입력"
+ *        description: "웨비나 시간표 를 입력합니다."
+ *        produces:
+ *        - "application/json"
+  *       parameters:
+ *        - in: "body"
+ *          name: "body"
+ *          description: "로그인을 위해 학교, 학생의 인적사항을 전달"
+ *          required: true
+ *          schema:
+ *            $ref: "#/definitions/auth_request" 
+ *        responses:
+ *          200:
+ *            description: "입력 성공"
+ *            schema:
+ *              $ref: "#/definitions/timetable_input"
+ *          400:
+ *            description: "입력 실패"
+ *          401:
+ *            description: "인증 에러"
+ */
 
-    const accessToken = jwt.sign({
-      ...result.dataValues 
-    }, process.env.JWT_SALT)
-    
-    const responseData = {
-      accessToken,
-      userId: result.dataValues.id,
-      studentId: result.dataValues.student_id,
-      studentName: result.dataValues.student_name,
-    }
-    res.status(200).send(responseData)
-  }
-  catch(error) {
-    res.status(500).send({
-      message: "서버에서 오류가 발생하였습니다."
-    })
-  }
-});
+ router.use(auth)
+      .post('/timetable', inputTimetable);
 
-module.exports = router;
+ module.exports = router

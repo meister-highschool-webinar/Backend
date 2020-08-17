@@ -1,12 +1,11 @@
 const { Router } = require('express');
 
-const auth = require('./auth');
 const docs = require('./docs');
+const auth = require('./auth');
 
 const { getTimetable } = require("../controllers/timetable.controller");
 
 const router = Router();
-
 
 /**
  * @swagger
@@ -37,9 +36,6 @@ const router = Router();
  *         description: 트랙 종료 시간
  */
 
-router.use('/auth', auth)
-router.use('/docs', docs)
-
 /**
  * @swagger
  *  paths:
@@ -59,6 +55,8 @@ router.use('/docs', docs)
  *          500:
  *            description: "DB 연결 에러"
  */
+router.use('/auth', auth);
+router.use('/docs', docs);
 router.get('/timetable-list', getTimetable);
 
 module.exports = router;
