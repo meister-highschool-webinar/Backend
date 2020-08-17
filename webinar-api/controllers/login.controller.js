@@ -1,17 +1,32 @@
-let { user } = require('../models');
-let jwt = require('jsonwebtoken');
+const { user } = require('../models');
+const jwt = require('jsonwebtoken');
+const Joi = require('joi');
 
 exports.login = async function(req, res, next) {
-  const { 
-    schoolName: school_name = "", 
-    grade = 0, 
-    class: _class = 0, 
-    studentId: student_id = 0, 
-    studentName: student_name = "",
-    number = 0
-  } = req.body;
-
   try {
+    const param = Joi.object({
+      schoolName: Joi.string().required(),
+      grade: Joi.number().integer().required(),
+      class: Joi.number().integer().required(),
+      studentId: Joi.number().integer().required(),
+      studentName: Joi.string().required(),
+      number: Joi.number().integer().required()
+    });
+    if(param.validate(req.body).error) {
+      res.status(400).send({
+        message: '공란이 존재합니다.'
+      })
+    }
+
+    const { 
+      schoolName: school_name,
+      grade, 
+      class: _class, 
+      studentId: student_id, 
+      studentName: student_name,
+      number
+    } = req.body;
+
     const result = await user.findOne({
       where: {
         school_name,
@@ -25,7 +40,7 @@ exports.login = async function(req, res, next) {
     });
 
     if(result === null) return res.status(400).send({
-      message: "공백이거나, 유효하지 않는 사용자입니다."
+      message: "유효하지 않은 사용자입니다."
     });
 
     const accessToken = jwt.sign({

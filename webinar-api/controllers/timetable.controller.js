@@ -1,4 +1,5 @@
-const { timetable } = require('../models')
+const { timetable } = require('../models');
+const Joi = require('joi');
 
 exports.getTimetable = async (req, res) => {
     try {
@@ -16,21 +17,19 @@ exports.inputTimetable = async(req, res) => {
 
     try {
         const flag = tableList.every(tableInfo => {
-            const {
-                trackName,
-                speech,
-                startTime,
-                endTime
-            } = tableInfo;
-
-            if(trackName === undefined || speech === undefined || startTime === undefined || endTime === undefined) {
+            const param = Joi.object({
+                trackName: Joi.string().required(),
+                speech: Joi.string().required(),
+                startTime: Joi.date().required(),
+                endTime: Joi.date().required()
+            })
+            if(param.validate(tableInfo).error) {
                 res.status(400).send({
-                    msg: '입력되지 않은 항목이 존재합니다.',
+                    msg: '공란이 존재합니다.',
                     msgId: 400
                 })
                 return false;
             }
-
             return true;
         })
 
