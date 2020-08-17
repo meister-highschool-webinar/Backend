@@ -1,4 +1,3 @@
-const { Sequelize } = require('sequelize');
 const Joi = require('joi');
 
 const { webinarTable } = require('../models')
