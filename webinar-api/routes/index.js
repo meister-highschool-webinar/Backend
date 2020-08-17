@@ -12,7 +12,7 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   name: Webinar
+ * - name: Webinar
  *   description: 웨비나 진행 관련 API
  * definitions:
  *   timetable_list:
@@ -36,6 +36,19 @@ const router = Router();
  *         type: string
  *         format: date-time
  *         description: 트랙 종료 시간
+ *   webinar-item:
+ *     type: object
+ *     properties:
+ *       title:
+ *         type: string
+ *         description: 웨비나 타이틀
+ *       link:
+ *         type: string
+ *         format: uri
+ *         description: 웨비나 유튜브 링크
+ *       detail:
+ *         type: string
+ *         description: 웨비나 소개
  */
 
 router.use('/auth', auth)
@@ -62,6 +75,31 @@ router.use('/docs', docs)
  */
 router.get('/timetable-list', getTimetable);
 
-router.get('/webinar-info/:id', getWebinar)
+/**
+ * @swagger
+ *  paths:
+ *    /webinar-info/{id}:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 정보 조회"
+ *        description: "웨비나 정보를 응답합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - name: id
+ *          in: path
+ *          description: 웨비나 고유 번호
+ *          type: integer
+ *          required: true
+ *        responses:
+ *          200:
+ *            description: "웨비나 정보"
+ *            schema:
+ *              $ref: "#/definitions/webinar-item"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+router.get('/webinar-info/:id', getWebinar);
 
 module.exports = router;
