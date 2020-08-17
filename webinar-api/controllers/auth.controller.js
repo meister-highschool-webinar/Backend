@@ -64,7 +64,7 @@ exports.newWebinar = async (req, res) => {
 
   try {
     let webinar = await webinarTable.create(req.body);
-    delete webinar.id;
+    delete webinar.dataValues.id;
     res.status(201).send(webinar);
   } catch (e) {
     res.sendStatus(500);
