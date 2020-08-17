@@ -97,8 +97,8 @@ router.get('/timetable-list', getTimetable);
  *            description: "웨비나 정보"
  *            schema:
  *              $ref: "#/definitions/webinar-item"
- *          500:
- *            description: "DB 연결 에러"
+ *          404:
+ *            description: "웨비나가 존재하지 않을 떄"
  */
 router.get('/webinar-info/:id', getWebinar);
 
