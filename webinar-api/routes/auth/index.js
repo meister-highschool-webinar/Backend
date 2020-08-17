@@ -3,7 +3,7 @@ const { Router } = require('express');
 const { login } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
 
-const { auth } = require('../../middlewares/auth.middle');
+const { adminAuth } = require('../../middlewares/auth.middle');
 
 const router = Router();
 
@@ -161,7 +161,6 @@ const router = Router();
  *            description: "서버 에러"
  */
 
- router.use(auth)
-      .post('/timetable', inputTimetable);
+ router.post('/timetable', adminAuth, inputTimetable);
 
  module.exports = router
