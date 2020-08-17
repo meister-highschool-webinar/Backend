@@ -13,6 +13,14 @@ const router = Router();
  *   name: Auth
  *   description: 로그인 처리
  * definitions:
+ *   auth:
+ *     type: string
+ *     require:
+ *       - x-access-token
+ *     properties:
+ *       x-access-token:
+ *         type: string
+ *         description: access token
  *   timetable_input_request:
  *     type: object
  *     require:
@@ -98,6 +106,8 @@ const router = Router();
  *  paths:
  *    /auth/login:
  *      post:
+ *        security:
+ *        -
  *        tags:
  *        - "Auth"
  *        summary: "Login"
@@ -138,9 +148,14 @@ const router = Router();
  *        produces:
  *        - "application/json"
  *        parameters:
+ *        - in: "header"
+ *          name: "x-access-token"
+ *          description: "관리자인지 확인을 위한 토큰을 입력 받습니다."
+ *          required: true
+ *          type: string
  *        - in: "body"
  *          name: "body"
- *          description: "로그인을 위해 학교, 학생의 인적사항을 전달"
+ *          description: "타임 테이블 입력을 위한 정보를 받습니다."
  *          required: true
  *          schema:
  *            $ref: "#/definitions/timetable_input_request" 
