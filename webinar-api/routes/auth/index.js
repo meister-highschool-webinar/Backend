@@ -13,6 +13,28 @@ const router = Router();
  *   name: Auth
  *   description: 로그인 처리
  * definitions:
+ *   timetable_input_request:
+ *     type: object
+ *     require:
+ *       - tableList
+ *     properties:
+ *       tableList:
+ *         type: array
+ *         description: 시간표 리스트
+ *         items: 
+ *           $ref: '#/definitions/timetable_item'
+ *   timetable_input_response:
+ *     type: object
+ *     require:
+ *       - msg
+ *       - msgId
+ *     properties:
+ *       msg:
+ *         type: string
+ *         description: "처리 메시지"
+ *       msgId:
+ *         type: number
+ *         description: "처리 id"
  *   auth_request:
  *     type: object
  *     required:
@@ -96,7 +118,7 @@ const router = Router();
  *            description: "로그인 결과"
  *            schema:
  *              $ref: "#/definitions/auth_response"
- *          401:
+ *          400:
  *            description: "잘못된 데이터"
  *            schema:
  *              $ref: "#/definitions/Response_error"
@@ -106,60 +128,37 @@ const router = Router();
 
 /**
  * @swagger
- * tags:
- *   name: Timetable
- *   description: 웨비나 시간표 입력
- * definitions:
- *   timetable_list:
- *     type: array
- *     items:
- *       $ref: '#/definitions/timetable_item'
- *   timetable_item:
- *     type: object
- *     properties:
- *       track_name:
- *         type: string
- *         description: 트랙 이름
- *       speech:
- *         type: string
- *         description: 발표자
- *       start_time:
- *         type: string
- *         format: date-time
- *         description: 트랙 시작 시간
- *       end_time:
- *         type: string
- *         format: date-time
- *         description: 트랙 종료 시간
- */
-
-/**
- * @swagger
  *  paths:
  *    /auth/timetable:
  *      post:
  *        tags:
  *        - "Timetable"
  *        summary: "웨비나 시간표 입력"
- *        description: "웨비나 시간표 를 입력합니다."
+ *        description: "웨비나 시간표를 입력합니다."
  *        produces:
  *        - "application/json"
-  *       parameters:
+ *        parameters:
  *        - in: "body"
  *          name: "body"
  *          description: "로그인을 위해 학교, 학생의 인적사항을 전달"
  *          required: true
  *          schema:
- *            $ref: "#/definitions/auth_request" 
+ *            $ref: "#/definitions/timetable_input_request" 
  *        responses:
  *          200:
  *            description: "입력 성공"
  *            schema:
- *              $ref: "#/definitions/timetable_input"
+ *              $ref: "#/definitions/timetable_input_response"
  *          400:
  *            description: "입력 실패"
+ *            schema:
+ *              $ref: "#/definitions/timetable_input_response"
  *          401:
  *            description: "인증 에러"
+ *            schema:
+ *              $ref: "#/definitions/timetable_input_response"
+ *          500:
+ *            description: "서버 에러"
  */
 
  router.use(auth)

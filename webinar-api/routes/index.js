@@ -20,17 +20,17 @@ const router = Router();
  *   timetable_item:
  *     type: object
  *     properties:
- *       track_name:
+ *       trackName:
  *         type: string
  *         description: 트랙 이름
  *       speech:
  *         type: string
  *         description: 발표자
- *       start_time:
+ *       startTime:
  *         type: string
  *         format: date-time
  *         description: 트랙 시작 시간
- *       end_time:
+ *       endTime:
  *         type: string
  *         format: date-time
  *         description: 트랙 종료 시간

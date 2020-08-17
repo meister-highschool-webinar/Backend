@@ -13,17 +13,18 @@ exports.getTimetable = async (req, res) => {
 
 exports.inputTimetable = async(req, res) => {
     const { tableList } = req.body;
+    console.log(tableList)
 
     try {
         const flag = tableList.every(tableInfo => {
             const {
-                track,
+                trackName,
                 speech,
                 startTime,
                 endTime
             } = tableInfo;
 
-            if(track === undefined || speech === undefined || startTime === undefined || endTime === undefined) {
+            if(trackName === undefined || speech === undefined || startTime === undefined || endTime === undefined) {
                 res.status(400).send({
                     msg: '입력된 항목에 공백이 존재합니다.',
                     msgId: 400
@@ -39,7 +40,7 @@ exports.inputTimetable = async(req, res) => {
         await Promise.all(
             tableList.map(async tableInfo => {
                 const {
-                    track: track_name,
+                    trackName: track_name,
                     speech,
                     startTime: start_time,
                     endTime : end_time
