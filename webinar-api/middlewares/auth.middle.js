@@ -8,16 +8,17 @@ const verifyJWT = (accessToken, salt) => new Promise((res, rej) => {
 })
 
 exports.userAuth = async (req, res, next) => {
-  next();
-  // try {
-  //   const headers = req.headers;
-  //   const payload = await verifyJWT(headers.authorization);
-  // } catch (e) {
-  //   res.status(401).json({
-  //     msg: "인증에 실패하였습니다.",
-  //     msgId: 401
-  //   })
-  // }
+  try {
+    const headers = req.headers;
+    const payload = await verifyJWT(headers.authorization);
+    req.decoded = payload;
+    next();
+  } catch (e) {
+    res.status(401).json({
+      msg: "인증에 실패하였습니다.",
+      msgId: 401
+    })
+  }
 }
 
 exports.adminAuth = async (req, res, next) => {
