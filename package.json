@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node webinar-api/bin/www",
-    "dev": "nodemon --watch 'webinar-api/**/*' webinar-api/bin/www"
+    "start": "cd webinar-api && node ./bin/www",
+    "dev": "cd webinar-api && nodemon --watch './**/*' ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
