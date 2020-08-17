@@ -101,6 +101,34 @@ let router = express.Router();
 
 router.post('/login', login);
 
-router.post('/webinar', newWebinar)
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/webinar:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 정보 생성"
+ *        description: "새로운 웨비나 정보를 DB에 삽입합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - name: body
+ *          in: body
+ *          description: 웨비나 정보
+ *          schema:
+ *              $ref: "#/definitions/webinar-item"
+ *        responses:
+ *          201:
+ *            description: "웨비나 정보"
+ *            schema:
+ *              $ref: "#/definitions/webinar-item"
+ *          400:
+ *            description: "입력 정보에 오류가 있을 때"
+ *          500:
+ *            description: "500 DB 연결 오류"
+ */
+router.post('/webinar', newWebinar);
 
 module.exports = router;
