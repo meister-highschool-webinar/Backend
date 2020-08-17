@@ -1,3 +1,4 @@
+const Joi = require('joi')
 const jwt = require('jsonwebtoken');
 
 const db = require('../models');
@@ -45,5 +46,18 @@ exports.login = async (req, res) => {
     res.status(500).send({
       message: "서버에서 오류가 발생하였습니다."
     })
+  }
+}
+
+exports.newWebinar = async (req, res) => {
+  const bodyData = Joi.object({
+    link: Joi.string().uri(),
+    title: Joi.string().required(),
+    detail: Joi.string().required()
+  })
+
+  if (bodyData.validate(req.body).error) {
+    res.sendStatus(400);
+    return;
   }
 }
