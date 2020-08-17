@@ -7,7 +7,7 @@ exports.getWebinar = async (req, res) => {
     const pathParam = Joi.object({
       id: Joi.number().integer().required()
     });
-    if (pathParam.validate(req.body).error) {
+    if (pathParam.validate(req.params).error) {
       res.sendStatus(404);
       return;
     }
