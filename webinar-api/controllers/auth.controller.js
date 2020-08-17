@@ -2,6 +2,7 @@ const Joi = require('joi')
 const jwt = require('jsonwebtoken');
 
 const db = require('../models');
+const { webinarTable } = require('../models');
 
 exports.login = async (req, res) => {
   const {
@@ -59,5 +60,13 @@ exports.newWebinar = async (req, res) => {
   if (bodyData.validate(req.body).error) {
     res.sendStatus(400);
     return;
+  }
+
+  try {
+    let webinar = await webinarTable.create(req.body);
+    delete webinar.id;
+    res.status(201).send(webinar);
+  } catch (e) {
+    res.sendStatus(500);
   }
 }
