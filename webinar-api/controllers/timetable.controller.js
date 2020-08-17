@@ -26,7 +26,7 @@ exports.inputTimetable = async(req, res) => {
 
             if(trackName === undefined || speech === undefined || startTime === undefined || endTime === undefined) {
                 res.status(400).send({
-                    msg: '입력된 항목에 공백이 존재합니다.',
+                    msg: '입력되지 않은 항목이 존재합니다.',
                     msgId: 400
                 })
                 return false;
