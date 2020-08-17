@@ -1,7 +1,11 @@
-let express = require('express');
-let db = require('../../models/index');
-let jwt = require('jsonwebtoken');
-let router = express.Router();
+const { Router } = require('express');
+
+const { login } = require('../../controllers/login.controller');
+const { inputTimetable } = require('../../controllers/timetable.controller');
+
+const { adminAuth } = require('../../middlewares/auth.middle');
+
+const router = Router();
 
 /**
  * @swagger
@@ -9,6 +13,36 @@ let router = express.Router();
  *   name: Auth
  *   description: 로그인 처리
  * definitions:
+ *   auth:
+ *     type: string
+ *     require:
+ *       - x-access-token
+ *     properties:
+ *       x-access-token:
+ *         type: string
+ *         description: access token
+ *   timetable_input_request:
+ *     type: object
+ *     require:
+ *       - tableList
+ *     properties:
+ *       tableList:
+ *         type: array
+ *         description: 시간표 리스트
+ *         items: 
+ *           $ref: '#/definitions/timetable_item'
+ *   timetable_input_response:
+ *     type: object
+ *     require:
+ *       - msg
+ *       - msgId
+ *     properties:
+ *       msg:
+ *         type: string
+ *         description: "처리 메시지"
+ *       msgId:
+ *         type: number
+ *         description: "처리 id"
  *   auth_request:
  *     type: object
  *     required:
@@ -72,6 +106,8 @@ let router = express.Router();
  *  paths:
  *    /auth/login:
  *      post:
+ *        security:
+ *        -
  *        tags:
  *        - "Auth"
  *        summary: "Login"
@@ -92,56 +128,54 @@ let router = express.Router();
  *            description: "로그인 결과"
  *            schema:
  *              $ref: "#/definitions/auth_response"
- *          401:
+ *          400:
  *            description: "잘못된 데이터"
  *            schema:
  *              $ref: "#/definitions/Response_error"
  */
 
-router.post('/login', async function(req, res, next) {
-  const { 
-    schoolName: school_name = "", 
-    grade = 0, 
-    class: _class = 0, 
-    studentId: student_id = 0, 
-    studentName: student_name = "",
-    number = 0
-  } = req.body;
+ router.post('/login', login);
 
-  try {
-    const result = await db.user.findOne({
-      where: {
-        school_name,
-        grade,
-        class: _class,
-        number,
-        student_id,
-        student_name
-      },
-      attributes: ['school_name', 'id', 'student_id', 'student_name', 'number']
-    });
+/**
+ * @swagger
+ *  paths:
+ *    /auth/timetable:
+ *      post:
+ *        tags:
+ *        - "Timetable"
+ *        summary: "웨비나 시간표 입력"
+ *        description: "웨비나 시간표를 입력합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - in: "header"
+ *          name: "x-access-token"
+ *          description: "관리자인지 확인을 위한 토큰을 입력 받습니다."
+ *          required: true
+ *          type: string
+ *        - in: "body"
+ *          name: "body"
+ *          description: "타임 테이블 입력을 위한 정보를 받습니다."
+ *          required: true
+ *          schema:
+ *            $ref: "#/definitions/timetable_input_request" 
+ *        responses:
+ *          200:
+ *            description: "입력 성공"
+ *            schema:
+ *              $ref: "#/definitions/timetable_input_response"
+ *          400:
+ *            description: "입력 실패"
+ *            schema:
+ *              $ref: "#/definitions/timetable_input_response"
+ *          401:
+ *            description: "인증 에러"
+ *            schema:
+ *              $ref: "#/definitions/timetable_input_response"
+ *          500:
+ *            description: "서버 에러"
+ */
 
-    if(result === null) return res.status(400).send({
-      message: "공백이거나, 유효하지 않는 사용자입니다."
-    });
+ router.post('/timetable', adminAuth, inputTimetable);
 
-    const accessToken = jwt.sign({
-      ...result.dataValues 
-    }, process.env.JWT_SALT)
-    
-    const responseData = {
-      accessToken,
-      userId: result.dataValues.id,
-      studentId: result.dataValues.student_id,
-      studentName: result.dataValues.student_name,
-    }
-    res.status(200).send(responseData)
-  }
-  catch(error) {
-    res.status(500).send({
-      message: "서버에서 오류가 발생하였습니다."
-    })
-  }
-});
-
-module.exports = router;
+ module.exports = router

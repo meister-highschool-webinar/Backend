@@ -1,13 +1,12 @@
 const { Router } = require('express');
 
-const auth = require('./auth');
 const docs = require('./docs');
+const auth = require('./auth');
 
 const { getTimetable } = require("../controllers/timetable.controller");
 const {getWebinar} = require("../controllers/webinar.controller");
 
 const router = Router();
-
 
 /**
  * @swagger
@@ -22,17 +21,17 @@ const router = Router();
  *   timetable_item:
  *     type: object
  *     properties:
- *       track_name:
+ *       trackName:
  *         type: string
  *         description: 트랙 이름
  *       speech:
  *         type: string
  *         description: 발표자
- *       start_time:
+ *       startTime:
  *         type: string
  *         format: date-time
  *         description: 트랙 시작 시간
- *       end_time:
+ *       endTime:
  *         type: string
  *         format: date-time
  *         description: 트랙 종료 시간
@@ -50,9 +49,6 @@ const router = Router();
  *         type: string
  *         description: 웨비나 소개
  */
-
-router.use('/auth', auth)
-router.use('/docs', docs)
 
 /**
  * @swagger
@@ -73,6 +69,8 @@ router.use('/docs', docs)
  *          500:
  *            description: "DB 연결 에러"
  */
+router.use('/auth', auth);
+router.use('/docs', docs);
 router.get('/timetable-list', getTimetable);
 
 /**
