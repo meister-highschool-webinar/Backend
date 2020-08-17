@@ -13,7 +13,6 @@ exports.getTimetable = async (req, res) => {
 
 exports.inputTimetable = async(req, res) => {
     const { tableList } = req.body;
-    console.log(tableList)
 
     try {
         const flag = tableList.every(tableInfo => {
