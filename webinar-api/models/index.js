@@ -1,4 +1,6 @@
 const { Sequelize } = require('sequelize');
+
+const User = require('./User');
 const Timetable = require('./Timetable');
 
 const sequelize = new Sequelize(
@@ -18,7 +20,7 @@ const sequelize = new Sequelize(
   }
 );
 
-const user = require('./user/index')(sequelize, Sequelize);
+const user = User(sequelize);
 const timetable = Timetable(sequelize);
 
 module.exports = { Sequelize, sequelize, user, timetable }
