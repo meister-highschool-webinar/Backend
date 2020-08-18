@@ -2,8 +2,18 @@
 
 const debug = require('debug')('webinar-api:server');
 const http = require('http');
+
+const { WebClient } = require('@slack/web-api');
 const dotenv = require('dotenv');
+const uuid = require('uuid');
+
 dotenv.config({path: '../.env'});
+
+access_token = uuid.v4();
+process.env.access_token = access_token;
+
+const web = new WebClient(process.env.SLACK_TOKEN);
+console.log(`액세스 토큰은 \`${access_token}\`입니다.`)
 
 const app = require('../app');
 
@@ -17,6 +27,12 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 console.log(`Server running at ${port}`);
+
+if (process.env.ENV === 'deploy')
+  web.chat.postMessage({
+    text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_token}\`입니다.`,
+    channel: process.env.SLACK_NOTIFIER
+  });
 
 function normalizePort(val) {
   const port = parseInt(val, 10);

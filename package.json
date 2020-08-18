@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cd webinar-api && node ./bin/www",
-    "dev": "cd webinar-api && nodemon --watch './**/*' ./bin/www"
+    "start": "cd webinar-api && cross-env ENV=deploy node ./bin/www",
+    "dev": "cd webinar-api && cross-env ENV=develop nodemon --watch './**/*' ./bin/www"
   },
   "dependencies": {
+    "@slack/web-api": "^5.11.0",
     "cookie-parser": "~1.4.4",
+    "cross-env": "^7.0.2",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
@@ -19,7 +21,8 @@
     "morgan": "~1.9.1",
     "sequelize": "^6.3.4",
     "swagger-jsdoc": "^4.0.0",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
