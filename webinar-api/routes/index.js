@@ -1,13 +1,12 @@
 const { Router } = require('express');
 
-const auth = require('./auth');
 const docs = require('./docs');
+const auth = require('./auth');
 
 const { getTimetable } = require("../controllers/timetable.controller");
-const {getWebinar} = require("../controllers/webinar.controller");
+const { getWebinar } = require("../controllers/webinar.controller");
 
 const router = Router();
-
 
 /**
  * @swagger
@@ -15,9 +14,6 @@ const router = Router();
  * - name: Webinar
  *   description: 웨비나 진행 관련 API
  */
-
-router.use('/auth', auth)
-router.use('/docs', docs)
 
 /**
  * @swagger
@@ -38,6 +34,8 @@ router.use('/docs', docs)
  *          500:
  *            description: "DB 연결 에러"
  */
+router.use('/auth', auth);
+router.use('/docs', docs);
 router.get('/timetable-list', getTimetable);
 
 /**
