@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { login } = require('../../controllers/login.controller');
+const { login, adminLogin } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
@@ -134,8 +134,9 @@ const router = Router();
  *            schema:
  *              $ref: "#/definitions/Response_error"
  */
-
 router.post('/login', login);
+
+router.post('/admin-login', adminLogin);
 
 /**
  * @swagger
@@ -166,6 +167,7 @@ router.post('/login', login);
  *            description: "500 DB 연결 오류"
  */
 router.post('/webinar', adminAuth, newWebinar);
+
 /**
  * @swagger
  *  paths:
@@ -201,7 +203,6 @@ router.post('/webinar', adminAuth, newWebinar);
  *          500:
  *            description: "서버 에러"
  */
-
 router.post('/timetable', adminAuth, inputTimetable);
 
-module.exports = router
+module.exports = router;

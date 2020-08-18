@@ -1,8 +1,9 @@
-const { user } = require('../models');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 
-exports.login = async function(req, res, next) {
+const { user } = require('../models');
+
+exports.login = async function(req, res) {
   try {
     const param = Joi.object({
       schoolName: Joi.string().required(),
@@ -60,4 +61,20 @@ exports.login = async function(req, res, next) {
       message: "서버에서 오류가 발생하였습니다."
     })
   }
+};
+
+exports.adminLogin = (req, res) => {
+  if (req.body.password !== process.env.access_token) {
+    res.sendStatus(403);
+    return;
+  }
+
+  const accessToken = jwt.sign({
+    token: process.env.access_token
+  }, process.env.JWT_ADMIN_SALT)
+
+  const responseData = {
+    accessToken
+  }
+  res.status(200).send(responseData)
 }
