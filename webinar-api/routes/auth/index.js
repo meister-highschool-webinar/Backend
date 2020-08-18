@@ -2,6 +2,7 @@ const { Router } = require('express');
 
 const { login } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
+const { newWebinar } = require("../../controllers/webinar.controller");
 
 const { adminAuth } = require('../../middlewares/auth.middle');
 
@@ -140,7 +141,7 @@ router.post('/login', login);
  * @swagger
  *  paths:
  *    /auth/webinar:
- *      get:
+ *      post:
  *        tags:
  *        - "Webinar"
  *        summary: "웨비나 정보 생성"
@@ -163,7 +164,7 @@ router.post('/login', login);
  *          500:
  *            description: "500 DB 연결 오류"
  */
-router.post('/webinar', newWebinar);
+router.post('/webinar', adminAuth, newWebinar);
 /**
  * @swagger
  *  paths:
