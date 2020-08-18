@@ -100,6 +100,12 @@ const router = Router();
  *       message:
  *         type: string
  *         description: 오류 사유
+ *   admin_auth_response:
+ *     type: object
+ *     properties:
+ *       accessToken:
+ *         type: string
+ *         description: 발급된 access token
  */
 
 /**
@@ -136,6 +142,40 @@ const router = Router();
  */
 router.post('/login', login);
 
+/**
+ * @swagger
+ *  paths:
+ *    /auth/admin-login:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "관리자 로그인"
+ *        description: "관리자 토큰을 사용해 로그인 합니다."
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - in: "body"
+ *          name: "body"
+ *          description: "관리자 토큰"
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              password:
+ *                type: string
+ *                format: uuid
+ *        responses:
+ *          200:
+ *            description: "로그인 결과"
+ *            schema:
+ *              $ref: "#/definitions/admin_auth_response"
+ *          403:
+ *            description: "잘못된 토큰"
+ */
 router.post('/admin-login', adminLogin);
 
 /**
