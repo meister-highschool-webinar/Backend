@@ -2,6 +2,7 @@ const { Router } = require('express');
 
 const { login } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
+const { newWebinar } = require("../../controllers/webinar.controller");
 
 const { adminAuth } = require('../../middlewares/auth.middle');
 
@@ -134,8 +135,37 @@ const router = Router();
  *              $ref: "#/definitions/Response_error"
  */
 
- router.post('/login', login);
+router.post('/login', login);
 
+/**
+ * @swagger
+ *  paths:
+ *    /auth/webinar:
+ *      post:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 정보 생성"
+ *        description: "새로운 웨비나 정보를 DB에 삽입합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        - name: body
+ *          in: body
+ *          description: 웨비나 정보
+ *          schema:
+ *              $ref: "#/definitions/webinar-item"
+ *        responses:
+ *          201:
+ *            description: "웨비나 정보"
+ *            schema:
+ *              $ref: "#/definitions/webinar-item"
+ *          400:
+ *            description: "입력 정보에 오류가 있을 때"
+ *          500:
+ *            description: "500 DB 연결 오류"
+ */
+router.post('/webinar', adminAuth, newWebinar);
 /**
  * @swagger
  *  paths:
@@ -148,11 +178,7 @@ const router = Router();
  *        produces:
  *        - "application/json"
  *        parameters:
- *        - in: "header"
- *          name: "x-access-token"
- *          description: "관리자인지 확인을 위한 토큰을 입력 받습니다."
- *          required: true
- *          type: string
+ *        - $ref: "#/definitions/x-access-token"
  *        - in: "body"
  *          name: "body"
  *          description: "타임 테이블 입력을 위한 정보를 받습니다."
@@ -176,6 +202,6 @@ const router = Router();
  *            description: "서버 에러"
  */
 
- router.post('/timetable', adminAuth, inputTimetable);
+router.post('/timetable', adminAuth, inputTimetable);
 
- module.exports = router
+module.exports = router

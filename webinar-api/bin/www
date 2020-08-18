@@ -3,7 +3,7 @@
 const debug = require('debug')('webinar-api:server');
 const http = require('http');
 const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config({path: '../.env'});
 
 const app = require('../app');
 

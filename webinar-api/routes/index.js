@@ -4,7 +4,7 @@ const docs = require('./docs');
 const auth = require('./auth');
 
 const { getTimetable } = require("../controllers/timetable.controller");
-const {getWebinar} = require("../controllers/webinar.controller");
+const { getWebinar } = require("../controllers/webinar.controller");
 
 const router = Router();
 
@@ -13,41 +13,6 @@ const router = Router();
  * tags:
  * - name: Webinar
  *   description: 웨비나 진행 관련 API
- * definitions:
- *   timetable_list:
- *     type: array
- *     items:
- *       $ref: '#/definitions/timetable_item'
- *   timetable_item:
- *     type: object
- *     properties:
- *       trackName:
- *         type: string
- *         description: 트랙 이름
- *       speech:
- *         type: string
- *         description: 발표자
- *       startTime:
- *         type: string
- *         format: date-time
- *         description: 트랙 시작 시간
- *       endTime:
- *         type: string
- *         format: date-time
- *         description: 트랙 종료 시간
- *   webinar-item:
- *     type: object
- *     properties:
- *       title:
- *         type: string
- *         description: 웨비나 타이틀
- *       link:
- *         type: string
- *         format: uri
- *         description: 웨비나 유튜브 링크
- *       detail:
- *         type: string
- *         description: 웨비나 소개
  */
 
 /**
