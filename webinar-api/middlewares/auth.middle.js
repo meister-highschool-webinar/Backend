@@ -21,6 +21,17 @@ exports.userAuth = async (req, res, next) => {
   }
 }
 
+/**
+ * @swagger
+ * definitions:
+ *   x-access-token:
+ *     in: "header"
+ *     name: "x-access-token"
+ *     description: "관리자인지 확인을 위한 토큰을 입력 받습니다."
+ *     required: true
+ *     type: string
+ */
+
 exports.adminAuth = async (req, res, next) => {
   try {
     const token = req.headers['x-access-token'] || req.query.token;

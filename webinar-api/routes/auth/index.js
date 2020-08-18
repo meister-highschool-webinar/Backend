@@ -149,6 +149,7 @@ router.post('/login', login);
  *        produces:
  *        - "application/json"
  *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
  *        - name: body
  *          in: body
  *          description: 웨비나 정보
@@ -177,11 +178,7 @@ router.post('/webinar', adminAuth, newWebinar);
  *        produces:
  *        - "application/json"
  *        parameters:
- *        - in: "header"
- *          name: "x-access-token"
- *          description: "관리자인지 확인을 위한 토큰을 입력 받습니다."
- *          required: true
- *          type: string
+ *        - $ref: "#/definitions/x-access-token"
  *        - in: "body"
  *          name: "body"
  *          description: "타임 테이블 입력을 위한 정보를 받습니다."

@@ -13,7 +13,7 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: ['../**/index.js', 'models/**/*.js']
+  apis: ['../**/index.js', 'models/**/*.js', '**/*.middle.js']
 }
 
 const specs = swaggerJSDoc(options);
