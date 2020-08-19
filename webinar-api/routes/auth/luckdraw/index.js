@@ -10,7 +10,7 @@ const router = require('express').Router();
  *     properties:
  *       event: 
  *         type: integer
- *         description: 이벤트 타입
+ *         description: 1 일반 경품 분배, 2 좋은 경품 분배, 3 학교 통합 랜덤 좋은 경품
  *   luckdraw_start_response:
  *     type: object
  *     properties:
