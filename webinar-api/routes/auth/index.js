@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { login } = require('../../controllers/login.controller');
+const { login, adminLogin } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
@@ -100,6 +100,12 @@ const router = Router();
  *       message:
  *         type: string
  *         description: 오류 사유
+ *   admin_auth_response:
+ *     type: object
+ *     properties:
+ *       accessToken:
+ *         type: string
+ *         description: 발급된 access token
  */
 
 /**
@@ -134,8 +140,43 @@ const router = Router();
  *            schema:
  *              $ref: "#/definitions/Response_error"
  */
-
 router.post('/login', login);
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/admin-login:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "관리자 로그인"
+ *        description: "관리자 토큰을 사용해 로그인 합니다."
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - in: "body"
+ *          name: "body"
+ *          description: "관리자 토큰"
+ *          required: true
+ *          schema:
+ *            type: object
+ *            properties:
+ *              password:
+ *                type: string
+ *                format: uuid
+ *        responses:
+ *          200:
+ *            description: "로그인 결과"
+ *            schema:
+ *              $ref: "#/definitions/admin_auth_response"
+ *          403:
+ *            description: "잘못된 토큰"
+ */
+router.post('/admin-login', adminLogin);
 
 /**
  * @swagger
@@ -166,6 +207,7 @@ router.post('/login', login);
  *            description: "500 DB 연결 오류"
  */
 router.post('/webinar', adminAuth, newWebinar);
+
 /**
  * @swagger
  *  paths:
@@ -201,7 +243,6 @@ router.post('/webinar', adminAuth, newWebinar);
  *          500:
  *            description: "서버 에러"
  */
-
 router.post('/timetable', adminAuth, inputTimetable);
 
-module.exports = router
+module.exports = router;
