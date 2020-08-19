@@ -4,6 +4,8 @@ const { login, adminLogin } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
+const luckdraw = require("./luckdraw");
+
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const router = Router();
@@ -244,5 +246,7 @@ router.post('/webinar', adminAuth, newWebinar);
  *            description: "서버 에러"
  */
 router.post('/timetable', adminAuth, inputTimetable);
+
+router.use('/luckdraw', adminAuth, luckdraw);
 
 module.exports = router;
