@@ -3,10 +3,16 @@ const Joi = require('joi');
 
 const { user } = require('../models');
 
+const range = event => {
+  if(event >= 1 && event <= 6) return [1, 6, 2];
+  else if(event >= 7 && event <= 9) return [7, 9, 1];
+  else return [10, 10, 1];
+}
+
 exports.startLuckdraw = async (req, res) => {
   try {
     const param = Joi.object({
-      event: Joi.number().integer().min(1).max(3)
+      event: Joi.number().integer().min(1).max(10)
     })
     if (param.validate(req.body).error) {
       return res.status(400).send({
@@ -16,35 +22,44 @@ exports.startLuckdraw = async (req, res) => {
     }
 
     const { event } = req.body;
-    const targetSchool = new Set(['대덕소프트웨어마이스터고등학교', '광주소프트웨어마이스터고등학교', '대구소프트웨어마이스터고등학교']);
-    const schoolWinners = {
-      '대덕소프트웨어마이스터고등학교': 0,
-      '광주소프트웨어마이스터고등학교': 0,
-      '대구소프트웨어마이스터고등학교': 0 
-    }
-    const eventLimit = {
-      1: 2,
-      2: 1,
-      3: 1
-    }
+    const [min, max, limit] = range(event);
 
-    const WinnerList = await user.findAll({
+    const targetSchool = new Set(['대덕소프트웨어마이스터고등학교', '광주소프트웨어마이스터고등학교', '대구소프트웨어마이스터고등학교']);
+
+    const isExistEvent = await user.findOne({
       where: {
-        lucky_flag: { 
+        lucky_flag: {
           [Op.eq]: event
         }
       }
     })
-  
-    WinnerList.forEach(userInfo => {
-      schoolWinners[userInfo.dataValues.school_name]++;
+
+    if(isExistEvent) return res.status(400).send({
+      msg: '이미 해당 이벤트의 당첨자가 선정되었습니다',
+      msgId: '400'
     })
-    targetSchool.forEach(schoolName => {
-      if(schoolWinners[schoolName] >= eventLimit[event]) {
-        targetSchool.delete(schoolName)
-        if(event === 3) targetSchool.clear();
+
+    const WinnerSchool = await user.findAll({
+      where: {
+        lucky_flag: { 
+          [Op.gte]: min,
+          [Op.lte]: max
+        }
+      },
+      attributes: ['school_name', [
+        fn('count', '*'),
+        'count'
+      ]],
+      group: 'school_name'
+    })
+
+    WinnerSchool.forEach(schoolInfo => {
+      const { count, school_name } = schoolInfo.dataValues;
+      if(count >= limit) {
+        if(event === 10) targetSchool.clear();
+        else targetSchool.delete(school_name);
       }
-    })
+    });
   
     if(targetSchool.size) {
       const luckyList = await user.findAll({
