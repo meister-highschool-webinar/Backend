@@ -1,4 +1,5 @@
 const { fn, Op } = require('sequelize');
+const { io } = require('../bin/websocket');
 const Joi = require('joi');
 
 const { user } = require('../models');
@@ -82,12 +83,21 @@ exports.startLuckdraw = async (req, res) => {
       })
     
       if(luckyList) {
+        const { id, school_name: schoolName, grade, class: _class, number, student_name: studentName } = luckyList[0].dataValues;
+
         await user.update({
           lucky_flag: event
         }, {
           where: {
-            id: luckyList[0].dataValues.id
+            id
           }
+        })
+        io().emit('winner', {
+          schoolName,
+          grade,
+          class: _class,
+          number,
+          studentName
         })
         return res.status(200).send({
           msg: '성공적으로 당첨자를 선정하였습니다.',
@@ -103,6 +113,7 @@ exports.startLuckdraw = async (req, res) => {
     }
   }
   catch(error) {
+    console.log(error)
     res.status(500).send({
       msg: "서버에서 오류가 발생하였습니다.",
       msgId: 500
