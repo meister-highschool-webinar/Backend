@@ -7,7 +7,7 @@ const { WebClient } = require('@slack/web-api');
 const dotenv = require('dotenv');
 const uuid = require('uuid');
 
-dotenv.config();
+dotenv.config({path: '../.env'});
 
 access_token = uuid.v4();
 process.env.access_token = access_token;
