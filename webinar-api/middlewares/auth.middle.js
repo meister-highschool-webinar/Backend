@@ -4,8 +4,10 @@ const verifyJWT = (accessToken, salt) => new Promise((res, rej) => {
   jwt.verify(accessToken, salt, (err, decoded) => {
     if(err) rej(err);
     res(decoded);
-  })
+  });
 })
+
+exports.verifyJWT = verifyJWT;
 
 exports.userAuth = async (req, res, next) => {
   try {

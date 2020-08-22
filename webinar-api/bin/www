@@ -5,7 +5,6 @@ const http = require('http');
 
 const { WebClient } = require('@slack/web-api');
 const dotenv = require('dotenv');
-const uuid = require('uuid');
 
 dotenv.config({path: '../.env'});
 
@@ -21,7 +20,7 @@ const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 const server = http.createServer(app);
-const io = require('./websocket').init(server);
+const io = require('../modules/websocket').init(server);
 
 server.listen(port);
 server.on('error', onError);
@@ -91,6 +90,31 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-io.on('connection', socket => {
+const { verifyJWT } = require("../middlewares/auth.middle");
+const { chatLog } = require("../models");
 
-})
+let connected = 0;
+io.on('connection', async (socket) => {
+  const token = socket.request._query['token'];
+  socket.session = await verifyJWT(token);
+  connected++;
+  io.emit('connected_change', ++connected);
+
+  socket.on('disconnect', _ => {
+    io.emit('connected_change', --connected);
+  });
+
+  socket.on('send message', (text) => {
+    const user = socket.session;
+
+    const chat = chatLog.create({
+      student_id: user.student_id,
+      student_name: user.student_name,
+      text: text
+    });
+
+    chat.school_name = user.school_name.substring(0, 2);
+
+    io.emit('receive message', chat);
+  });
+});

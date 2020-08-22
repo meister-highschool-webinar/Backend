@@ -1,5 +1,5 @@
 const { fn, Op } = require('sequelize');
-const { io } = require('../bin/websocket');
+const { io } = require('../modules/websocket');
 const Joi = require('joi');
 
 const { user } = require('../models');
