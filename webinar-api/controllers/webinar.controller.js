@@ -4,19 +4,14 @@ const { webinarTable } = require('../models')
 
 exports.getWebinar = async (req, res) => {
   try {
-    const pathParam = Joi.object({
-      id: Joi.number().integer().required()
+    const webinar = await webinarTable.findAll({
+      limit: 1,
+      attributes: ['title', 'link', 'detail'],
+      order: [ [ 'id', 'DESC' ]]
     });
-    if (pathParam.validate(req.params).error) {
-      res.sendStatus(404);
-      return;
-    }
-    const webinar = await webinarTable.findByPk(req.params.id, {
-      attributes: ['title', 'link', 'detail']
-    });
-    res.send(webinar);
+    res.send(webinar[0]);
   } catch (e) {
-    res.sendStatus(404);
+    res.sendStatus(500);
   }
 }
 
