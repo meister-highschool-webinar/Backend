@@ -5,6 +5,7 @@ const auth = require('./auth');
 
 const { getTimetable } = require("../controllers/timetable.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
+const { qna } = require("../controllers/survey.controllers");
 
 const router = Router();
 
@@ -64,5 +65,27 @@ router.get('/timetable-list', getTimetable);
  *            description: "웨비나가 존재하지 않을 떄"
  */
 router.get('/webinar-info/:id', getWebinar);
+
+/**
+ * @swagger
+ *  paths:
+ *    /qna:
+ *      get:
+ *        tags:
+ *        - "Survey"
+ *        summary: "설문 결과 조회"
+ *        description: "설문 결과를 조회합니다."
+ *        produces:
+ *        - "application/json"
+ *        responses:
+ *          200:
+ *            description: "시간표"
+ *            schema:
+ *              $ref: "#/definitions/qna_response"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+
+router.get('/qna', qna);
 
 module.exports = router;
