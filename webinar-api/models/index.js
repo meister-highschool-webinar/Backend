@@ -1,8 +1,9 @@
 const { Sequelize } = require('sequelize');
 
+const ChatLog = require('./ChatLog');
 const User = require('./User');
 const Timetable = require('./Timetable');
-const WebinarTable = require('./WebinarTable')
+const WebinarTable = require('./WebinarTable');
 
 const sequelize = new Sequelize(
   {
@@ -21,8 +22,9 @@ const sequelize = new Sequelize(
   }
 );
 
+const chatLog = ChatLog(sequelize);
 const user = User(sequelize);
 const timetable = Timetable(sequelize);
 const webinarTable = WebinarTable(sequelize);
 
-module.exports = { Sequelize, sequelize, user, timetable, webinarTable }
+module.exports = { Sequelize, sequelize, chatLog, user, timetable, webinarTable }
