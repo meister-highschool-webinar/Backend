@@ -49,20 +49,14 @@ router.get('/timetable-list', getTimetable);
  *        description: "웨비나 정보를 응답합니다."
  *        produces:
  *        - "application/json"
- *        parameters:
- *        - name: id
- *          in: path
- *          description: 웨비나 고유 번호
- *          type: integer
- *          required: true
  *        responses:
  *          200:
  *            description: "웨비나 정보"
  *            schema:
  *              $ref: "#/definitions/webinar-item"
- *          404:
- *            description: "웨비나가 존재하지 않을 떄"
+ *          500:
+ *            description: "DB 연결 에러"
  */
-router.get('/webinar-info/:id', getWebinar);
+router.get('/webinar-info', getWebinar);
 
 module.exports = router;
