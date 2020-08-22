@@ -111,7 +111,9 @@ io.on('connection', async (socket) => {
       student_id: user.student_id,
       student_name: user.student_name,
       text: text
-    })
+    });
+
+    chat.school_name = user.school_name;
 
     io.emit('receive message', chat);
   });
