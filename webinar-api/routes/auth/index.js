@@ -16,6 +16,55 @@ const router = Router();
  *   name: Auth
  *   description: 로그인 처리
  * definitions:
+ *   qna_response:
+ *     type: object
+ *     require:
+ *       - qna
+ *     properties:
+ *       qna:
+ *         type: object
+ *         description: 설문 조사 결과 리스트
+ *         properties:
+ *           school:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           grade:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           major:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           info:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           language:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           field:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           company:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *   qna_item:
+ *     type: object
+ *     require:
+ *       - name
+ *       - count
+ *     properties:
+ *       name:
+ *         type: string
+ *         description: 요소 이름
+ *       count:
+ *         type: integer
+ *         description: 요소 개수
  *   auth:
  *     type: string
  *     require:
