@@ -4,11 +4,14 @@ const { login, adminLogin } = require('../../controllers/login.controller');
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
-const luckdraw = require("./luckdraw");
-
 const { adminAuth } = require('../../middlewares/auth.middle');
 
+const luckdraw = require("./luckdraw");
+const {exportToFile} = require("../../controllers/file.controller");
+
 const router = Router();
+
+router.use('/luckdraw', adminAuth, luckdraw);
 
 /**
  * @swagger
@@ -296,6 +299,6 @@ router.post('/webinar', adminAuth, newWebinar);
  */
 router.post('/timetable', adminAuth, inputTimetable);
 
-router.use('/luckdraw', adminAuth, luckdraw);
+router.get('/file-download', exportToFile);
 
 module.exports = router;

@@ -42,7 +42,7 @@ router.get('/timetable-list', getTimetable);
 /**
  * @swagger
  *  paths:
- *    /webinar-info/{id}:
+ *    /webinar-info:
  *      get:
  *        tags:
  *        - "Webinar"
