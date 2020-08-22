@@ -39,7 +39,7 @@ exports.inputTimetable = async(req, res) => {
         await Promise.all(
             tableList.map(async tableInfo => {
                 const {
-                    trackName: track_name,
+                    track_name,
                     speech,
                     start_time,
                     end_time
