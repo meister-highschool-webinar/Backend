@@ -113,7 +113,7 @@ io.on('connection', async (socket) => {
       text: text
     });
 
-    chat.school_name = user.school_name;
+    chat.school_name = user.school_name.substring(0, 2);
 
     io.emit('receive message', chat);
   });
