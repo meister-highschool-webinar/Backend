@@ -17,11 +17,12 @@ exports.inputTimetable = async(req, res) => {
 
     try {
         const flag = tableList.every(tableInfo => {
+            console.log(tableInfo)
             const param = Joi.object({
-                trackName: Joi.string().required(),
+                track_name: Joi.string().required(),
                 speech: Joi.string().required(),
-                startTime: Joi.date().required(),
-                endTime: Joi.date().required()
+                start_time: Joi.date().iso().required(),
+                end_time: Joi.date().iso().required()
             })
             if(param.validate(tableInfo).error) {
                 res.status(400).send({
@@ -40,8 +41,8 @@ exports.inputTimetable = async(req, res) => {
                 const {
                     trackName: track_name,
                     speech,
-                    startTime: start_time,
-                    endTime : end_time
+                    start_time,
+                    end_time
                 } = tableInfo;
 
                 await timetable.create({
