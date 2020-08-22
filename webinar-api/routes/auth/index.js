@@ -299,6 +299,32 @@ router.post('/webinar', adminAuth, newWebinar);
  */
 router.post('/timetable', adminAuth, inputTimetable);
 
-router.get('/file-download', exportToFile);
+/**
+ * @swagger
+ *  paths:
+ *    /auth/file-download:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 데이터 다운로드"
+ *        description: "웨비나 데이터를 csv로 다운로드합니다."
+ *        produces:
+ *        - "text/csv"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        - in: "query"
+ *          name: "dataName"
+ *          description: "가져올 데이터 종류"
+ *          required: true
+ *          schema:
+ *            type: string
+ *            enum: [timetable, chatlog]
+ *        responses:
+ *          200:
+ *            description: "export 성공"
+ *          404:
+ *            description: "없는 데이터"
+ */
+router.get('/file-download', adminAuth, exportToFile);
 
 module.exports = router;
