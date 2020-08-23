@@ -29,12 +29,21 @@ exports.qna = async (req, res) => {
   }
 
   try {
-    request('https://docs.google.com/spreadsheets/d/1FmsQ74kT9O54VPk5SXr9q8BHs4OCNopDA_c_ZXyldvc/export?format=csv&id=1FmsQ74kT9O54VPk5SXr9q8BHs4OCNopDA_c_ZXyldvc&gid=792694193')
+    request('https://docs.google.com/spreadsheets/d/1fmA9A0cDey9PS69cdaRTw4SdQ4nP2-HFrw9m62-lGts/export?format=csv&id=1fmA9A0cDey9PS69cdaRTw4SdQ4nP2-HFrw9m62-lGts&gid=210713919')
     .pipe(csv())
     .on('data', data => results.push(data))
     .on('end', () => {
       results.forEach(data => {
-        const { '학교': schoolName, '학년': grade, '전공': major, '학교 외에 학습 관련 정보를 얻는 곳': info, '사용 언어': language, '향후 진출하고 싶은 분야': field, '향후 입사하고 싶은 기업': company} = data;
+        const { 
+          '학교': schoolName, 
+          '학년': grade, 
+          '전공': major, 
+          '학교 외에 학습 관련 정보를 얻는 곳(중복선택 가능)': info, 
+          '사용 언어(중복선택 가능)': language, 
+          '향후 진출하고 싶은 분야(중복선택 가능)': field, 
+          '향후 입사하고 싶은 기업(중복선택 가능)': company
+        } = data;
+
         addToQna(qna.school, schoolName);
         addToQna(qna.grade, grade);
         addToQna(qna.major, major);
