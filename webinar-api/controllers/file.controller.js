@@ -21,7 +21,6 @@ exports.exportToFile = async (req, res) => {
   }
   const parser = new Parser({fields});
   data = parser.parse(data);
-  data = iconv.encode(data, 'euc-kr');
   res.attachment(`${dataName}.csv`);
   res.status(200).send(data);
 }
