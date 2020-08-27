@@ -97,7 +97,11 @@ const { chatLog } = require("../models");
 let connected = 0;
 io.on('connection', async (socket) => {
   const token = socket.request._query['token'];
-  socket.session = await verifyJWT(token);
+  try {
+    socket.session = await verifyJWT(token, process.env.JWT_SALT);
+  } catch (e) {
+    // ignored
+  }
   connected++;
   io.emit('connected_change', ++connected);
 
@@ -105,17 +109,17 @@ io.on('connection', async (socket) => {
     io.emit('connected_change', --connected);
   });
 
-  socket.on('send message', (text) => {
+  socket.on('send message', async (text) => {
     const user = socket.session;
+    if (!user) return;
 
-    const chat = chatLog.create({
+    const chat = (await chatLog.create({
       student_id: user.student_id,
       student_name: user.student_name,
       text: text
-    });
+    })).dataValues;
 
     chat.school_name = user.school_name.substring(0, 2);
-
     io.emit('receive message', chat);
   });
 });
