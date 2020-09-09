@@ -2,14 +2,15 @@ const csv = require('csv-parser');
 const request = require('request');
 
 const addToQna = (qna, property) => {
-  property.split(", ").forEach(data => {
-    const idx = qna.findIndex(el => el.name === data);
+  property.split(/,(?![^()]*\))\s*/).forEach(data => {
+    const removeBlankData = data.replace(" ", "");
+    const idx = qna.findIndex(el => el.name === removeBlankData);
     if(idx !== -1) {
       qna[idx].count++;
     }
     else {
       qna.push({
-        name: data,
+        name: removeBlankData,
         count: 1
       })
     }
