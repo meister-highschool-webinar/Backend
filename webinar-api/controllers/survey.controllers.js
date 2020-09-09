@@ -29,7 +29,7 @@ exports.qna = async (req, res) => {
   }
 
   try {
-    request('https://docs.google.com/spreadsheets/d/1fmA9A0cDey9PS69cdaRTw4SdQ4nP2-HFrw9m62-lGts/export?format=csv&id=1fmA9A0cDey9PS69cdaRTw4SdQ4nP2-HFrw9m62-lGts&gid=210713919')
+    request('https://docs.google.com/spreadsheets/d/e/2PACX-1vTvCjUGpkCK66ipteSR0DJnNzwuVBDV5Pgyq0q9cYFScbDFOLi_lVYylhg-PTfo8LMEMQNh8n5xpNG0/pub?gid=210713919&single=true&output=csv')
     .pipe(csv())
     .on('data', data => results.push(data))
     .on('end', () => {
