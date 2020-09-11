@@ -7,5 +7,5 @@ COPY ./webinar-api /webinar-api
 RUN npm install
 
 
-CMD ["node", "/bin/www"]
+CMD ["node", "./bin/www"]
 
