@@ -1,11 +1,9 @@
 FROM node:lts
-
-WORKDIR /webinar-api
-
-
-COPY ./webinar-api /webinar-api
+WORKDIR /
+RUN git clone https://github.com/meister-highschool-webinar/Backend.git
+WORKDIR /Backend
 RUN npm install
 
-
+WORKDIR /Backend/webinar-api
 CMD ["node", "./bin/www"]
 
