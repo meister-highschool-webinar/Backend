@@ -6,6 +6,7 @@ const auth = require('./auth');
 const { getTimetable } = require("../controllers/timetable.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
 const { qna } = require("../controllers/survey.controllers");
+const { getWinnerList } = require('../controllers/luckdraw.controller');
 
 const router = Router();
 
@@ -81,5 +82,7 @@ router.get('/webinar-info', getWebinar);
  */
 
 router.get('/qna', qna);
+
+router.get('/winner', getWinnerList);
 
 module.exports = router;
