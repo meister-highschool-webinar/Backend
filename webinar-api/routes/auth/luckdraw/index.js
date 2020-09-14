@@ -5,12 +5,37 @@ const router = require('express').Router();
 /**
  * @swagger
  * definitions:
+ *   winner_data:
+ *     type: object
+ *     properties:
+ *       school_name:
+ *         type: string
+ *         description: 학교명
+ *       grade:
+ *         type: integer
+ *         description: 학년
+ *       class:
+ *         type: integer
+ *         description: 반
+ *       number:
+ *         type: integer
+ *         description: 번호
+ *       student_name:
+ *         type: string
+ *         description: 학생명
+ *       lucky_flag:
+ *         type: integer
+ *         description: 당첨 이벤트 번호
+ *   winner:
+ *     type: array
+ *     items:
+ *       $ref: "#/definitions/winner_data"
  *   luckdraw_start_request:
  *     type: object
  *     properties:
  *       event: 
  *         type: integer
- *         description: 1 일반 경품 분배, 2 좋은 경품 분배, 3 학교 통합 랜덤 좋은 경품
+ *         description: 1 ~ 6일반 경품 분배, 7 ~ 9좋은 경품 분배, 10 학교 통합 랜덤 좋은 경품
  *   luckdraw_start_response:
  *     type: object
  *     properties:
