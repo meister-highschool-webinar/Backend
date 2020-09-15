@@ -10,6 +10,32 @@ const range = event => {
   else return [10, 10, 1];
 }
 
+exports.getWinnerList = async (req, res) => {
+  try {
+    const winnerList = Array(10).fill({})
+    const winnersInfo = await user.findAll({
+      order: [ [ 'lucky_flag', 'ASC' ]],
+      attributes: ['lucky_flag', 'school_name', 'grade', 'class', 'number', 'student_name'],
+      where: {
+        lucky_flag: {
+          [Op.ne]: 0
+        }
+      }
+    })
+    winnersInfo.forEach(winnerInfo => {
+      const info = winnerInfo.dataValues;
+      winnerList[info.lucky_flag - 1] = info;
+    });
+    res.status(200).send(winnerList)
+
+  } catch {
+    res.status(500).send({
+      msg: "서버에서 오류가 발생하였습니다.",
+      msgId: 500
+    })
+  }
+}
+
 exports.startLuckdraw = async (req, res) => {
   try {
     const param = Joi.object({
@@ -83,7 +109,7 @@ exports.startLuckdraw = async (req, res) => {
       })
     
       if(luckyList) {
-        const { id, school_name: schoolName, grade, class: _class, number, student_name: studentName } = luckyList[0].dataValues;
+        const { id, school_name, grade, class: _class, number, student_name } = luckyList[0].dataValues;
 
         await user.update({
           lucky_flag: event
@@ -93,11 +119,12 @@ exports.startLuckdraw = async (req, res) => {
           }
         })
         io().emit('winner', {
-          schoolName,
+          lucky_flag: event,
+          school_name,
           grade,
           class: _class,
           number,
-          studentName
+          student_name
         })
         return res.status(200).send({
           msg: '성공적으로 당첨자를 선정하였습니다.',
@@ -113,7 +140,6 @@ exports.startLuckdraw = async (req, res) => {
     }
   }
   catch(error) {
-    console.log(error)
     res.status(500).send({
       msg: "서버에서 오류가 발생하였습니다.",
       msgId: 500

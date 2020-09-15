@@ -7,7 +7,7 @@ exports.getWebinar = async (req, res) => {
     const webinar = await webinarTable.findAll({
       limit: 1,
       attributes: ['title', 'link', 'detail'],
-      order: [ [ 'id', 'DESC' ]]
+      order: [[ 'id', 'DESC' ]]
     });
     res.send(webinar[0]);
   } catch (e) {

@@ -10,7 +10,11 @@ const indexRouter = require('./routes');
 const app = express();
 
 app.use(logger('dev'));
-app.use(cors());
+app.use(cors({
+  "origin": "*",
+  "allowedHeaders": "Content-Type,x-access-token,Access-Control-Allow-Origin"
+}));
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
