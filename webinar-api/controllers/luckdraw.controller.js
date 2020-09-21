@@ -4,6 +4,32 @@ const Joi = require('joi');
 
 const { user } = require('../models');
 
+exports.getWinnerList = async (req, res) => {
+  try {
+    const winnerList = Array(10).fill({})
+    const winnersInfo = await user.findAll({
+      order: [ [ 'lucky_flag', 'ASC' ]],
+      attributes: ['lucky_flag', 'school_name', 'grade', 'class', 'number', 'student_name'],
+      where: {
+        lucky_flag: {
+          [Op.ne]: 0
+        }
+      }
+    })
+    winnersInfo.forEach(winnerInfo => {
+      const info = winnerInfo.dataValues;
+      winnerList[info.lucky_flag - 1] = info;
+    });
+    res.status(200).send(winnerList)
+
+  } catch {
+    res.status(500).send({
+      msg: "서버에서 오류가 발생하였습니다.",
+      msgId: 500
+    })
+  }
+}
+
 exports.startLuckdraw = async (req, res) => {
   const school = ["광주소프트웨어마이스터고등학교",
     "대덕소프트웨어마이스터고등학교",
@@ -97,9 +123,7 @@ exports.startLuckdraw = async (req, res) => {
       })
     }
   }
-
-  catch (error) {
-    console.log(error)
+  catch(error) {
     res.status(500).send({
       msg: "서버에서 오류가 발생하였습니다.",
       msgId: 500

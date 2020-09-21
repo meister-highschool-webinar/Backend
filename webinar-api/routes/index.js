@@ -6,6 +6,7 @@ const auth = require('./auth');
 const { getTimetable } = require("../controllers/timetable.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
 const { qna } = require("../controllers/survey.controllers");
+const { getWinnerList } = require('../controllers/luckdraw.controller');
 
 const router = Router();
 
@@ -81,5 +82,27 @@ router.get('/webinar-info', getWebinar);
  */
 
 router.get('/qna', qna);
+
+/**
+ * @swagger
+ *  paths:
+ *    /winner:
+ *      get:
+ *        tags:
+ *        - "Winner"
+ *        summary: "럭키드로우 전체 결과 조회"
+ *        description: "럭키드로우 전체 결과를 조회합니다."
+ *        produces:
+ *        - "application/json"
+ *        responses:
+ *          200:
+ *            description: "결과"
+ *            schema:
+ *              $ref: "#/definitions/winner"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+
+router.get('/winner', getWinnerList);
 
 module.exports = router;
