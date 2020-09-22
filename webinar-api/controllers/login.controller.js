@@ -59,8 +59,8 @@ exports.login = async function(req, res) {
       loginFlag: result.dataValues.login_flag
     }
 
-    const startTime = new Date("2020-09-23 1:10:00 GMT+0900");
-    const endTime = new Date("2020-09-23 1:13:00 GMT+0900");
+    const startTime = new Date("2020-09-23 13:30:00 GMT+0900");
+    const endTime = new Date("2020-09-23 14:30:00 GMT+0900");
     const currentTime = new Date();
     const currentTimeZone = currentTime.getTimezoneOffset();
     currentTime.setUTCMilliseconds(currentTime.getUTCMilliseconds() + ((currentTimeZone + 540) * 60 * 1000));
