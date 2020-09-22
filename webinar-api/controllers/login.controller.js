@@ -11,7 +11,8 @@ exports.login = async function(req, res) {
       class: Joi.number().integer().required(),
       studentId: Joi.number().integer().required(),
       studentName: Joi.string().required(),
-      number: Joi.number().integer().required()
+      number: Joi.number().integer().required(),
+      code: Joi.string().length(6)
     });
     if(param.validate(req.body).error) {
       res.status(400).send({
@@ -25,7 +26,8 @@ exports.login = async function(req, res) {
       class: _class, 
       studentId: student_id, 
       studentName: student_name,
-      number
+      number,
+      code
     } = req.body;
 
     const result = await user.findOne({
@@ -35,9 +37,10 @@ exports.login = async function(req, res) {
         class: _class,
         number,
         student_id,
-        student_name
+        student_name,
+        code
       },
-      attributes: ['school_name', 'id', 'student_id', 'student_name', 'number']
+      attributes: ['school_name', 'id', 'student_id', 'student_name', 'number', 'login_flag']
     });
 
     if(result === null) return res.status(400).send({
@@ -53,13 +56,16 @@ exports.login = async function(req, res) {
       userId: result.dataValues.id,
       studentId: result.dataValues.student_id,
       studentName: result.dataValues.student_name,
+      loginFlag: result.dataValues.login_flag
     }
 
-    const startTime = new Date("2020-09-23 13:30:00");
-    const endTime = new Date("2020-09-23 14:30:00");
+    const startTime = new Date("2020-09-23 1:10:00 GMT+0900");
+    const endTime = new Date("2020-09-23 1:13:00 GMT+0900");
     const currentTime = new Date();
+    const currentTimeZone = currentTime.getTimezoneOffset();
+    currentTime.setUTCMilliseconds(currentTime.getUTCMilliseconds() + ((currentTimeZone + 540) * 60 * 1000));
 
-    if(startTime <= currentTime && currentTime <= endTime) {
+    if(startTime <= currentTime && currentTime <= endTime && responseData.loginFlag === 0) {
       await user.update({
         login_flag: 1
       }, {
@@ -72,6 +78,7 @@ exports.login = async function(req, res) {
     res.status(200).send(responseData)
   }
   catch(error) {
+    console.log(error)
     res.status(500).send({
       message: "서버에서 오류가 발생하였습니다."
     })
