@@ -4,11 +4,35 @@ const Joi = require('joi');
 
 const { user } = require('../models');
 
+exports.resetWinnerList = async (req, res) => {
+  try {
+    await user.update({
+      lucky_flag: 0
+    }, {
+      where: {
+        lucky_flag: {
+          [Op.ne]: 0
+        }
+      }
+    })
+
+    return res.status(200).send({
+      msg: 'success',
+      msgId: 200
+    })
+  } catch (error) {
+    return res.status(500).send({
+      msg: 'Internal server error',
+      msgId: 500
+    })
+  }
+}
+
 exports.getWinnerList = async (req, res) => {
   try {
     const winnerList = Array(10).fill({})
     const winnersInfo = await user.findAll({
-      order: [ [ 'lucky_flag', 'ASC' ]],
+      order: [['lucky_flag', 'ASC']],
       attributes: ['lucky_flag', 'school_name', 'grade', 'class', 'number', 'student_name'],
       where: {
         lucky_flag: {
@@ -123,7 +147,7 @@ exports.startLuckdraw = async (req, res) => {
       })
     }
   }
-  catch(error) {
+  catch (error) {
     res.status(500).send({
       msg: "서버에서 오류가 발생하였습니다.",
       msgId: 500
