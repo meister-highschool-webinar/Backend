@@ -1,4 +1,4 @@
-const { startLuckdraw } = require('../../../controllers/luckdraw.controller');
+const { startLuckdraw, resetWinnerList } = require('../../../controllers/luckdraw.controller');
 
 const router = require('express').Router();
 
@@ -50,6 +50,29 @@ const router = require('express').Router();
 /**
  * @swagger
  *  paths:
+ *    /auth/luckdraw/reset:
+ *      patch:
+ *        tags:
+ *        - "Luckdraw"
+ *        summary: "럭키 드로우 초기화"
+ *        description: "럭키 드로우 당첨자를 초기화합니다"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        responses:
+ *          200:
+ *            description: "당첨자 선정 성공"
+ *            schema:
+ *              $ref: "#/definitions/luckdraw_start_response"
+ *          401:
+ *            description: "인증 에러"
+ *            schema:
+ *              $ref: "#/definitions/luckdraw_start_response"
+ *          500:
+ *            description: "서버 에러"
+ *            schema:
+ *              $ref: "#/definitions/luckdraw_start_response"      
  *    /auth/luckdraw/start:
  *      post:
  *        tags:
@@ -86,5 +109,6 @@ const router = require('express').Router();
  */
 
 router.post('/start', startLuckdraw);
+router.patch('/reset', resetWinnerList);
 
 module.exports = router;

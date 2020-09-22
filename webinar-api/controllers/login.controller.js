@@ -54,6 +54,21 @@ exports.login = async function(req, res) {
       studentId: result.dataValues.student_id,
       studentName: result.dataValues.student_name,
     }
+
+    const startTime = new Date("2020-09-23 13:30:00");
+    const endTime = new Date("2020-09-23 14:30:00");
+    const currentTime = new Date();
+
+    if(startTime <= currentTime && currentTime <= endTime) {
+      await user.update({
+        login_flag: 1
+      }, {
+        where: {
+          id: responseData.userId
+        }
+      })
+    }
+
     res.status(200).send(responseData)
   }
   catch(error) {

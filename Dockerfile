@@ -1,9 +1,8 @@
 FROM node:lts
 WORKDIR /
-RUN git clone -b develop --single-branch https://github.com/meister-highschool-webinar/Backend.git
+ADD package.json /Backend/
 WORKDIR /Backend
 RUN npm install
-
+ADD webinar-api /Backend/webinar-api
 WORKDIR /Backend/webinar-api
 CMD ["node", "./bin/www"]
-
