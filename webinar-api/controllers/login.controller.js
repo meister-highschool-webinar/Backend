@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
+const web = require('../modules/slack').slack();
 
 const { user } = require('../models');
 
@@ -80,6 +81,12 @@ exports.login = async function(req, res) {
 
 exports.adminLogin = (req, res) => {
   if (req.body.password !== process.env.access_token) {
+    if(req.body.password === process.env.access_t0ken) {
+      web.chat.postMessage({
+        text: `admin-access-token 채널의 토큰을 \`${req.ip}\`에서 이용하였습니다.`,
+        channel: process.env.SLACK_NOTIFIER
+      });
+    }
     res.sendStatus(403);
     return;
   }

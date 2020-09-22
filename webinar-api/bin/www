@@ -3,16 +3,16 @@
 const debug = require('debug')('webinar-api:server');
 const http = require('http');
 
-const { WebClient } = require('@slack/web-api');
 const dotenv = require('dotenv').config({path:"../.env"});
 const uuid = require('uuid');
 const xss = require("xss");
 
 const access_token = uuid.v4();
 const access_t0ken = uuid.v4();
+process.env.access_t0ken = access_t0ken;
 process.env.access_token = access_token;
 
-const web = new WebClient(process.env.SLACK_TOKEN);
+const web = require('../modules/slack').init()
 console.log(`액세스 토큰은 \`${access_token}\`입니다.`)
 
 const app = require('../app');
