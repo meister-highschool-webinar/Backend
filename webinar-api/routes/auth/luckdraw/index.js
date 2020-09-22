@@ -109,6 +109,6 @@ const router = require('express').Router();
  */
 
 router.post('/start', startLuckdraw);
-router.post('/reset', resetWinnerList);
+router.patch('/reset', resetWinnerList);
 
 module.exports = router;
