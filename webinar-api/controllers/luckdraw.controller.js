@@ -55,15 +55,15 @@ exports.getWinnerList = async (req, res) => {
 }
 
 exports.startLuckdraw = async (req, res) => {
-  const school = ["광주소프트웨어마이스터고등학교",
-    "대덕소프트웨어마이스터고등학교",
-    "대덕소프트웨어마이스터고등학교",
-    "대구소프트웨어마이스터고등학교",
-    "광주소프트웨어마이스터고등학교",
-    "대구소프트웨어마이스터고등학교",
-    "대덕소프트웨어마이스터고등학교",
-    "대구소프트웨어마이스터고등학교",
-    "광주소프트웨어마이스터고등학교"]
+  const school = ["광주SW마이스터고",
+    "대덕SW마이스터고",
+    "대덕SW마이스터고",
+    "대구SW고등학교",
+    "광주SW마이스터고",
+    "대구SW고등학교",
+    "대덕SW마이스터고",
+    "대구SW고등학교",
+    "광주SW마이스터고"]
 
   school.push(school[Math.floor(Math.random() * 9)])
 
