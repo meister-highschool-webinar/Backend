@@ -18,7 +18,8 @@ const sequelize = new Sequelize(
     'define': {
       freezeTableName: true,
       timestamps: false
-    }
+    },
+    logging: (query, data) => console.log({query, bind: data.bind}),
   }
 );
 

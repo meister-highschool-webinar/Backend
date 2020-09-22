@@ -4,11 +4,12 @@ const debug = require('debug')('webinar-api:server');
 const http = require('http');
 
 const { WebClient } = require('@slack/web-api');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config({path:"../.env"});
 const uuid = require('uuid');
+const xss = require("xss");
 
-
-access_token = uuid.v4();
+const access_token = uuid.v4();
+const access_t0ken = uuid.v4();
 process.env.access_token = access_token;
 
 const web = new WebClient(process.env.SLACK_TOKEN);
@@ -28,11 +29,16 @@ server.on('listening', onListening);
 
 console.log(`Server running at ${port}`);
 
-if (process.env.ENV === 'deploy')
-  web.chat.postMessage({
-    text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_token}\`입니다.`,
-    channel: process.env.SLACK_NOTIFIER
-  });
+if (process.env.ENV === 'deploy') {
+    web.chat.postMessage({
+      text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_token}\`입니다.`,
+      channel: process.env.SLACK_NOTIFIER
+    });
+    web.chat.postMessage({
+      text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_t0ken}\`입니다.`,
+      channel: process.env.SLACK_N0TIFIER
+    });
+  }
 
 function normalizePort(val) {
   const port = parseInt(val, 10);
@@ -114,7 +120,7 @@ io.on('connection', async (socket) => {
     const chat = (await chatLog.create({
       student_id: user.student_id,
       student_name: user.student_name,
-      text: text
+      text: xss(text),
     })).dataValues;
 
     chat.school_name = user.school_name.substring(0, 2);
