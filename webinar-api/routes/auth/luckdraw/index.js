@@ -51,7 +51,7 @@ const router = require('express').Router();
  * @swagger
  *  paths:
  *    /auth/luckdraw/reset:
- *      post:
+ *      patch:
  *        tags:
  *        - "Luckdraw"
  *        summary: "럭키 드로우 초기화"
