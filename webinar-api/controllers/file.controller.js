@@ -12,7 +12,7 @@ exports.exportToFile = async (req, res) => {
       fields = Object.keys(timetable.rawAttributes);
       break;
     case 'chatlog':
-      data = chatLog.findAll();
+      data = await chatLog.findAll();
       fields = Object.keys(chatLog.rawAttributes);
       break;
     default:
