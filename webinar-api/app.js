@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
+const helmet = require("helmet");
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -9,8 +10,15 @@ const indexRouter = require('./routes');
 
 const app = express();
 
-app.use(logger('dev'));
-app.use(cors());
+app.disable('x-powered-by');
+app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
+app.use(helmet());
+app.use(logger('combined'));
+app.use(cors({
+  "origin": "*",
+  "allowedHeaders": "Content-Type,x-access-token,Access-Control-Allow-Origin"
+}));
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

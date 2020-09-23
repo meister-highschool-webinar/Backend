@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
+const web = require('../modules/slack').slack();
 
 const { user } = require('../models');
 
@@ -54,6 +55,21 @@ exports.login = async function(req, res) {
       studentId: result.dataValues.student_id,
       studentName: result.dataValues.student_name,
     }
+
+    const startTime = new Date("2020-09-23 13:30:00");
+    const endTime = new Date("2020-09-23 14:30:00");
+    const currentTime = new Date();
+
+    if(startTime <= currentTime && currentTime <= endTime) {
+      await user.update({
+        login_flag: 1
+      }, {
+        where: {
+          id: responseData.userId
+        }
+      })
+    }
+
     res.status(200).send(responseData)
   }
   catch(error) {
@@ -65,6 +81,12 @@ exports.login = async function(req, res) {
 
 exports.adminLogin = (req, res) => {
   if (req.body.password !== process.env.access_token) {
+    if(req.body.password === process.env.access_t0ken) {
+      web.chat.postMessage({
+        text: `admin-access-token 채널의 토큰을 \`${req.ip}\`에서 이용하였습니다.`,
+        channel: process.env.SLACK_NOTIFIER
+      });
+    }
     res.sendStatus(403);
     return;
   }
