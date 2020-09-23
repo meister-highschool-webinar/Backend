@@ -107,6 +107,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       - number
  *       - studentId
  *       - studentName
+ *       - code
  *     properties:
  *       schoolName:
  *         type: string
@@ -126,6 +127,9 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       studentName:
  *         type: string
  *         description: 학생 이름
+ *       code:
+ *         type: string
+ *         description: 인증 코드
  *   auth_response:
  *     type: object
  *     required:
@@ -167,8 +171,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *  paths:
  *    /auth/login:
  *      post:
- *        security:
- *        -
  *        tags:
  *        - "Auth"
  *        summary: "Login"
