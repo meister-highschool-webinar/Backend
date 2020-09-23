@@ -3,12 +3,12 @@
 const debug = require('debug')('webinar-api:server');
 const http = require('http');
 
-const dotenv = require('dotenv').config({path:"../.env"});
+const dotenv = require('dotenv');
 const uuid = require('uuid');
 const xss = require("xss");
 
-const access_token = uuid.v4();
-const access_t0ken = uuid.v4();
+access_token = uuid.v4();
+access_t0ken = uuid.v4();
 process.env.access_t0ken = access_t0ken;
 process.env.access_token = access_token;
 
