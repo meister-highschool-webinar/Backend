@@ -3,7 +3,7 @@
 const debug = require('debug')('webinar-api:server');
 const http = require('http');
 
-const dotenv = require('dotenv').config({path:"../.env"});
+const dotenv = require('dotenv').config({ path: "../.env" });
 const uuid = require('uuid');
 const xss = require("xss");
 
@@ -31,29 +31,29 @@ console.log(`Server running at ${port}`);
 
 if (process.env.ENV === 'deploy') {
     web.chat.postMessage({
-      text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_token}\`입니다.`,
-      channel: process.env.SLACK_NOTIFIER
+        text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_token}\`입니다.`,
+        channel: process.env.SLACK_NOTIFIER
     });
     web.chat.postMessage({
-      text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_t0ken}\`입니다.`,
-      channel: process.env.SLACK_N0TIFIER
+        text: `서버가 실행되었습니다. 액세스 토큰은 \`${access_t0ken}\`입니다.`,
+        channel: process.env.SLACK_N0TIFIER
     });
-  }
+}
 
 function normalizePort(val) {
-  const port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+    if (port >= 0) {
+        // port number
+        return port;
+    }
 
-  return false;
+    return false;
 }
 
 /**
@@ -61,27 +61,27 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
 
-  const bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+    const bind = typeof port === 'string' ?
+        'Pipe ' + port :
+        'Port ' + port;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
 }
 
 /**
@@ -89,41 +89,55 @@ function onError(error) {
  */
 
 function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+    const addr = server.address();
+    const bind = typeof addr === 'string' ?
+        'pipe ' + addr :
+        'port ' + addr.port;
+    debug('Listening on ' + bind);
 }
 
 const { verifyJWT } = require("../middlewares/auth.middle");
 const { chatLog } = require("../models");
 
 let connected = 0;
-io.on('connection', async (socket) => {
-  const token = socket.request._query['token'];
-  try {
-    socket.session = await verifyJWT(token, process.env.JWT_SALT);
-  } catch (e) {
-    // ignored
-  }
-  io.emit('connected_change', ++connected);
+io.on('connection', async(socket) => {
+    const token = socket.request._query['token'];
+    try {
+        socket.session = await verifyJWT(token, process.env.JWT_SALT);
+    } catch (e) {
+        // ignored
+    }
+    io.emit('connected_change', ++connected);
 
-  socket.on('disconnect', _ => {
-    io.emit('connected_change', --connected);
-  });
+    socket.on('disconnect', _ => {
+        io.emit('connected_change', --connected);
+    });
 
-  socket.on('send message', async (text) => {
-    const user = socket.session;
-    if (!user) return;
+    socket.on('send message', async(text) => {
+        const user = socket.session;
+        if (!user) return;
 
-    const chat = (await chatLog.create({
-      student_id: user.student_id,
-      student_name: user.student_name,
-      text: xss(text),
-    })).dataValues;
+        const chat = (await chatLog.create({
+            student_id: user.student_id,
+            student_name: user.student_name,
+            text: xss(text),
+        })).dataValues;
 
-    chat.school_name = user.school_name.substring(0, 2);
-    io.emit('receive message', chat);
-  });
+        chat.school_name = user.school_name.substring(0, 2);
+        io.emit('receive message', chat);
+    });
+
+    socket.on('qna send message', async(text) => {
+        const user = socket.session;
+        if (!user) return;
+
+        const chat = (await chatLog.create({
+            student_id: user.student_id,
+            student_name: user.student_name,
+            text: xss(text),
+        })).dataValues;
+
+        chat.school_name = user.school_name.substring(0, 2);
+        io.emit('qna receive message', chat);
+    });
 });
