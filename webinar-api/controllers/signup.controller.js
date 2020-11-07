@@ -13,7 +13,8 @@ exports.signup = async function(req, res) {
             class: Joi.number().integer().required(),
             number: Joi.number().integer().required(),
             email: Joi.string().required(),
-            password: Joi.string().required()
+            password: Joi.string().required(),
+            studentName: Joi.string().required()
         });
         if (param.validate(req.body).error) {
             res.status(400).send({
@@ -50,12 +51,13 @@ exports.signup = async function(req, res) {
         });
         const hash = await bcrypt.hash(password, 10);
         const create_row = await user.create({
+            student_name: student_name,
             school_name: code.dataValues.name,
             grade: grade,
             class: _class,
             number: number,
             email: email,
-            password: hash
+            pw_hash: hash
         }).then(result => {
             res.status(200).send({
                 message: "회원가입을 성공하였습니다"
@@ -67,7 +69,6 @@ exports.signup = async function(req, res) {
         });
 
     } catch (error) {
-        console.log(error);
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })

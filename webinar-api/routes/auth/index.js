@@ -113,6 +113,9 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       schoolCode:
  *         type: string
  *         description: 학교 코드
+ *       studentName:
+ *         type: string
+ *         description: 학생 이름
  *       grade:
  *         type: integer
  *         description: 학년
@@ -132,12 +135,12 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *     type: object
  *     required:
  *       - email
- *       - pwHash
+ *       - password
  *     properties:
  *       email:
  *         type: string
  *         description: 이메일
- *       pwHash:
+ *       password:
  *         type: string
  *         description: 비밀번호
  *   auth_response:

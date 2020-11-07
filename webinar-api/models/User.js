@@ -7,10 +7,10 @@ module.exports = (sequelize) => (
             primaryKey: true,
             autoIncrement: true
         },
-        student_id: {
-            type: DataTypes.INTEGER
+        student_name: {
+            type: DataTypes.STRING
         },
-        school_code: {
+        school_name: {
             type: DataTypes.STRING
         },
         email: {

@@ -9,7 +9,7 @@ exports.login = async function(req, res) {
     try {
         const param = Joi.object({
             email: Joi.string().required(),
-            pwHash: Joi.string().required(),
+            password: Joi.string().required(),
 
         });
         if (param.validate(req.body).error) {
@@ -19,22 +19,22 @@ exports.login = async function(req, res) {
         }
 
         const {
-            email: email,
-            pwHash: pwHash,
+            email,
+            password
         } = req.body;
 
         const result = await user.findOne({
             where: {
                 email
             },
-            attributes: ['email']
+            attributes: ['email', 'pw_hash']
         });
         if (!email) {
             return res.status(400).send({
                 message: "email을 입력해주세요"
             });
         }
-        if (!pwHash) {
+        if (!password) {
             return res.status(400).send({
                 message: "패스워드를 입력해주세요"
             });
@@ -42,7 +42,7 @@ exports.login = async function(req, res) {
         if (result === null) return res.status(400).send({
             message: "사용자 등록을 하세요"
         });
-        const check = await bcrypt.compare(result.dataValues.pw_hash, pwHash);
+        const check = await bcrypt.compare(password, result.dataValues.pw_hash);
         if (!check) {
             return res.status(400).send({
                 message: "유효하지 않은 사용자입니다."
