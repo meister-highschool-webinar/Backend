@@ -1,13 +1,14 @@
 const { Router } = require('express');
 
 const { login, adminLogin } = require('../../controllers/login.controller');
+const { signup } = require("../../controllers/signup.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const luckdraw = require("./luckdraw");
-const {exportToFile} = require("../../controllers/file.controller");
+const { exportToFile } = require("../../controllers/file.controller");
 
 const router = Router();
 
@@ -98,19 +99,23 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       msgId:
  *         type: number
  *         description: "처리 id"
- *   auth_request:
+ *   signup_request:
  *     type: object
  *     required:
- *       - schoolName
+ *       - schoolCode
  *       - grade
  *       - class
  *       - number
- *       - studentId
+ *       - email
+ *       - password
  *       - studentName
  *     properties:
- *       schoolName:
+ *       schoolCode:
  *         type: string
- *         description: 학교 이름
+ *         description: 학교 코드
+ *       studentName:
+ *         type: string
+ *         description: 학생 이름
  *       grade:
  *         type: integer
  *         description: 학년
@@ -120,12 +125,24 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       number:
  *         type: integer
  *         description: 번호
- *       studentId:
- *         type: integer
- *         description: 학생 번호
- *       studentName:
+ *       email:
  *         type: string
- *         description: 학생 이름
+ *         description: 이메일
+ *       password:
+ *         type: string
+ *         description: 비밀번호
+ *   auth_request:
+ *     type: object
+ *     required:
+ *       - email
+ *       - password
+ *     properties:
+ *       email:
+ *         type: string
+ *         description: 이메일
+ *       password:
+ *         type: string
+ *         description: 비밀번호
  *   auth_response:
  *     type: object
  *     required:
@@ -146,6 +163,14 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       studentName:
  *         type: string
  *         description: 학생 이름
+ *   Response_success:
+ *     type: object
+ *     required:
+ *       - status
+ *     properties:
+ *       message:
+ *         type: string
+ *         description: 성공
  *   Response_error:
  *     type: object
  *     required:
@@ -180,7 +205,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *        parameters:
  *        - in: "body"
  *          name: "body"
- *          description: "로그인을 위해 학교, 학생의 인적사항을 전달"
+ *          description: "로그인을 위해 이메일과 비밀번호 전달"
  *          required: true
  *          schema:
  *            $ref: "#/definitions/auth_request"
@@ -326,5 +351,41 @@ router.post('/timetable', adminAuth, inputTimetable);
  *            description: "없는 데이터"
  */
 router.get('/file-download', adminAuth, exportToFile);
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/signup:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "Signup"
+ *        description: ""
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - in: "body"
+ *          name: "body"
+ *          description: "로그인을 위해 이메일과 비밀번호 전달"
+ *          required: true
+ *          schema:
+ *            $ref: "#/definitions/signup_request"
+ *        responses:
+ *          200:
+ *            description: "로그인 결과"
+ *            schema:
+ *              $ref: "#/definitions/auth_response"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_success"
+ */
+router.post('/signup', signup);
+
 
 module.exports = router;
