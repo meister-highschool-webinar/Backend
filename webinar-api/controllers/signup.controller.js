@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const web = require('../modules/slack').slack();
@@ -11,10 +11,9 @@ exports.signup = async function(req, res) {
             schoolCode: Joi.string().required(),
             grade: Joi.number().integer().required(),
             class: Joi.number().integer().required(),
-            studentName: Joi.string().required(),
             number: Joi.number().integer().required(),
-            email: Joi.number().string().required(),
-            password: Joi.number().string().required()
+            email: Joi.string().required(),
+            password: Joi.string().required()
         });
         if (param.validate(req.body).error) {
             res.status(400).send({
@@ -34,9 +33,9 @@ exports.signup = async function(req, res) {
 
         const code = await schoolCode.findOne({
             where: {
-                school_code
+                code: school_code
             },
-            attributes: ['school_code', "school_name"]
+            attributes: ['code', "name"]
         });
 
         const result = await user.findOne({
@@ -50,8 +49,8 @@ exports.signup = async function(req, res) {
             message: "중복된 사용자가 있습니다"
         });
         const hash = await bcrypt.hash(password, 10);
-        const result = await user.create({
-            school_name: code.dataValues.school_name,
+        const create_row = await user.create({
+            school_name: code.dataValues.name,
             grade: grade,
             class: _class,
             number: number,
@@ -68,6 +67,7 @@ exports.signup = async function(req, res) {
         });
 
     } catch (error) {
+        console.log(error);
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })

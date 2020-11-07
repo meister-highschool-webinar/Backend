@@ -7,7 +7,7 @@ module.exports = (sequelize) => (
             primaryKey: true,
             autoIncrement: true
         },
-        cdoe: {
+        code: {
             type: DataTypes.STRING
         },
         name: {

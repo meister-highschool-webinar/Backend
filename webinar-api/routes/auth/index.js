@@ -1,6 +1,7 @@
 const { Router } = require('express');
 
 const { login, adminLogin } = require('../../controllers/login.controller');
+const { signup } = require("../../controllers/signup.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
@@ -98,6 +99,35 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       msgId:
  *         type: number
  *         description: "처리 id"
+ *   signup_request:
+ *     type: object
+ *     required:
+ *       - schoolCode
+ *       - grade
+ *       - class
+ *       - number
+ *       - email
+ *       - password
+ *       - studentName
+ *     properties:
+ *       schoolCode:
+ *         type: string
+ *         description: 학교 코드
+ *       grade:
+ *         type: integer
+ *         description: 학년
+ *       class:
+ *         type: integer
+ *         description: 반
+ *       number:
+ *         type: integer
+ *         description: 번호
+ *       email:
+ *         type: string
+ *         description: 이메일
+ *       password:
+ *         type: string
+ *         description: 비밀번호
  *   auth_request:
  *     type: object
  *     required:
@@ -130,6 +160,14 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       studentName:
  *         type: string
  *         description: 학생 이름
+ *   Response_success:
+ *     type: object
+ *     required:
+ *       - status
+ *     properties:
+ *       message:
+ *         type: string
+ *         description: 성공
  *   Response_error:
  *     type: object
  *     required:
@@ -310,5 +348,41 @@ router.post('/timetable', adminAuth, inputTimetable);
  *            description: "없는 데이터"
  */
 router.get('/file-download', adminAuth, exportToFile);
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/signup:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "Signup"
+ *        description: ""
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - in: "body"
+ *          name: "body"
+ *          description: "로그인을 위해 이메일과 비밀번호 전달"
+ *          required: true
+ *          schema:
+ *            $ref: "#/definitions/signup_request"
+ *        responses:
+ *          200:
+ *            description: "로그인 결과"
+ *            schema:
+ *              $ref: "#/definitions/auth_response"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_success"
+ */
+router.post('/signup', signup);
+
 
 module.exports = router;
