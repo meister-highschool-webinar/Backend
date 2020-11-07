@@ -128,16 +128,16 @@ io.on('connection', async(socket) => {
     });
 
     socket.on('qna send message', async(text) => {
-        const user = socket.session;
-        if (!user) return;
+        const qna_user = socket.session;
+        if (!qna_user) return;
 
-        const chat = (await chatLog.create({
+        const qna_chat = (await chatLog.create({
             student_id: user.student_id,
             student_name: user.student_name,
             text: xss(text),
         })).dataValues;
 
-        chat.school_name = user.school_name.substring(0, 2);
-        io.emit('qna receive message', chat);
+        qna_chat.school_name = qna_user.school_name.substring(0, 2);
+        io.emit('qna receive message', qna_chat);
     });
 });
