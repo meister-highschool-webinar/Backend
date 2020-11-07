@@ -7,7 +7,7 @@ const { newWebinar } = require("../../controllers/webinar.controller");
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const luckdraw = require("./luckdraw");
-const {exportToFile} = require("../../controllers/file.controller");
+const { exportToFile } = require("../../controllers/file.controller");
 
 const router = Router();
 
@@ -101,31 +101,15 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *   auth_request:
  *     type: object
  *     required:
- *       - schoolName
- *       - grade
- *       - class
- *       - number
- *       - studentId
- *       - studentName
+ *       - email
+ *       - pwHash
  *     properties:
- *       schoolName:
+ *       email:
  *         type: string
- *         description: 학교 이름
- *       grade:
- *         type: integer
- *         description: 학년
- *       class:
- *         type: integer
- *         description: 반
- *       number:
- *         type: integer
- *         description: 번호
- *       studentId:
- *         type: integer
- *         description: 학생 번호
- *       studentName:
+ *         description: 이메일
+ *       pwHash:
  *         type: string
- *         description: 학생 이름
+ *         description: 비밀번호
  *   auth_response:
  *     type: object
  *     required:
@@ -180,7 +164,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *        parameters:
  *        - in: "body"
  *          name: "body"
- *          description: "로그인을 위해 학교, 학생의 인적사항을 전달"
+ *          description: "로그인을 위해 이메일과 비밀번호 전달"
  *          required: true
  *          schema:
  *            $ref: "#/definitions/auth_request"
