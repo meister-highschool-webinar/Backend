@@ -47,7 +47,20 @@ exports.signup = async function(req, res) {
         });
 
         if (result != null) return res.status(400).send({
-            message: "중복된 사용자가 있습니다"
+            message: "이메일이 중복된 사용자가 있습니다"
+        });
+
+        const result_another = await user.findOne({
+            where: {
+                grade,
+                number,
+                _class
+            },
+            attributes: ['email']
+        });
+
+        if (result_another != null) return res.status(400).send({
+            message: "이미 가입된 학년 반 번호입니다"
         });
         const hash = await bcrypt.hash(password, 10);
         const create_row = await user.create({
