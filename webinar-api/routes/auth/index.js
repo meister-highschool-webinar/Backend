@@ -77,6 +77,14 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       x-access-token:
  *         type: string
  *         description: access token
+ *   refresh_token:
+ *     type: string
+ *     require:
+ *       - x-access-token
+ *     properties:
+ *       x-access-token:
+ *         type: string
+ *         description: refresh token
  *   timetable_input_request:
  *     type: object
  *     require:

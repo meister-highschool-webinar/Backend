@@ -66,6 +66,8 @@ exports.refresh = async function(req, res) {
 
 exports.me = (req, res) => {
     try {
+        const headers = req.headers;
+        const { accessToken, salt } = headers.authorization;
         const param = Joi.object({
             email: Joi.string().required(),
         });
@@ -86,15 +88,16 @@ exports.me = (req, res) => {
             attributes: ['id', 'student_name', 'access_token']
         });
 
-        const accessToken = result.dataValuesr.refresh_token;
-
-        const responseData = {
-            accessToken,
-            userId: result.dataValues.id,
-            studentName: result.dataValues.student_name,
+        if (accessToken === result.dataValuesr.refresh_token) {
+            res.status(500).send({
+                message: "유효한 access token입니다"
+            })
+        } else {
+            res.status(400).send({
+                message: "유효한 access token이 아닙니다"
+            })
         }
 
-        res.status(200).send(responseData)
     } catch (error) {
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
