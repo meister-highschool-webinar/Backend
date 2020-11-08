@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const web = require('../modules/slack').slack();
+const randtoken = require('rand-token')
 
 const { user } = require('../models');
 
@@ -27,7 +28,7 @@ exports.login = async function(req, res) {
             where: {
                 email
             },
-            attributes: ['email', 'pw_hash']
+            attributes: ['student_name', 'id', 'email', 'pw_hash']
         });
         if (!email) {
             return res.status(400).send({
@@ -48,20 +49,33 @@ exports.login = async function(req, res) {
                 message: "유효하지 않은 사용자입니다."
             });
         }
-        const accessToken = jwt.sign({
-            ...result.dataValues
-        }, process.env.JWT_SALT)
-
-        const responseData = {
-            accessToken,
-            userId: result.dataValues.id,
-            studentId: result.dataValues.student_id,
-            studentName: result.dataValues.student_name,
-        }
-
         const startTime = new Date("2020-11-26 13:30:00");
         const endTime = new Date("2020-11-26 14:30:00");
         const currentTime = new Date();
+
+        const accessToken = jwt.sign({
+            ...result.dataValues.email
+        }, process.env.JWT_SALT)
+        const refreshToken = randtoken.uid(128)
+
+        await user.update({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            token_create_time: currentTime
+        }, {
+            where: {
+                email
+            }
+        })
+
+        const responseData = {
+            accessToken,
+            refreshToken,
+            userId: result.dataValues.id,
+            studentName: result.dataValues.student_name,
+        }
+
+
 
         if (startTime <= currentTime && currentTime <= endTime) {
             await user.update({
@@ -74,6 +88,45 @@ exports.login = async function(req, res) {
         }
 
         res.status(200).send(responseData)
+    } catch (error) {
+
+        res.status(500).send({
+            message: "서버에서 오류가 발생하였습니다."
+        })
+    }
+};
+
+exports.logout = async function(req, res) {
+    try {
+        const headers = req.headers;
+
+        const accessToken = headers["access-token"];
+
+        const result = await user.findOne({
+            where: {
+                access_token: accessToken
+            },
+            attributes: ['email']
+        });
+
+        if (result === null) return res.status(400).send({
+            message: "유효하지 않은 access token입니다"
+        });
+
+        const email = result.dataValues.email
+        await user.update({
+            access_token: null,
+            refresh_token: null,
+            token_create_time: null
+        }, {
+            where: {
+                email
+            }
+        })
+
+        res.status(200).send({
+            message: "성공적으로 로그아웃되었습니다"
+        })
     } catch (error) {
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
@@ -96,7 +149,6 @@ exports.adminLogin = (req, res) => {
     const accessToken = jwt.sign({
         token: process.env.access_token
     }, process.env.JWT_ADMIN_SALT)
-
     const responseData = {
         accessToken
     }
