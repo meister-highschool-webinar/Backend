@@ -28,7 +28,7 @@ exports.login = async function(req, res) {
             where: {
                 email
             },
-            attributes: ['email', 'pw_hash']
+            attributes: ['student_name', 'id', 'email', 'pw_hash']
         });
         if (!email) {
             return res.status(400).send({
@@ -72,7 +72,6 @@ exports.login = async function(req, res) {
             accessToken,
             refreshToken,
             userId: result.dataValues.id,
-            studentId: result.dataValues.student_id,
             studentName: result.dataValues.student_name,
         }
 
