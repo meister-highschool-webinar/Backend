@@ -2,7 +2,6 @@ const Joi = require('joi');
 
 const { webinarTable } = require('../models');
 const e = require('express');
-const { response } = require('../app');
 
 exports.getWebinar = async(req, res) => {
     try {
@@ -13,13 +12,9 @@ exports.getWebinar = async(req, res) => {
                 ['id', 'DESC']
             ]
         });
-        if (webinar === null) {
-            res.send({
-                title: "",
-                link: "",
-                detail: ""
-            })
-        }
+        if (webinar.length == 0) return res.status(400).send({
+            message: "데이터가 없습니다"
+        });
 
         res.send(webinar[0]);
     } catch (e) {

@@ -89,7 +89,7 @@ exports.login = async function(req, res) {
 
         res.status(200).send(responseData)
     } catch (error) {
-        console.log(error)
+
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })

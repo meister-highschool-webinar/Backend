@@ -10,9 +10,8 @@ const { user } = require('../models');
 exports.refresh = async function(req, res) {
     try {
         const headers = req.headers;
-        console.log(headers)
+
         const refreshToken = headers["refresh-token"];
-        console.log(refreshToken)
         const param = Joi.object({
             email: Joi.string().required(),
         });
@@ -32,7 +31,6 @@ exports.refresh = async function(req, res) {
             },
             attributes: ['email', 'id', 'student_name', 'refresh_token']
         });
-        console.log(result.dataValues.refresh_token)
         if (!result || result.dataValues.refresh_token != refreshToken) {
             return res.status(400).send({
                 message: "유효하지 않은 refresh token입니다"
@@ -61,7 +59,7 @@ exports.refresh = async function(req, res) {
 
         res.status(200).send(responseData)
     } catch (error) {
-        console.log(error)
+
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })
@@ -72,7 +70,7 @@ exports.me = async function(req, res) {
     try {
         const headers = req.headers;
         const accessToken = headers["access-token"];
-        console.log(headers)
+
         const param = Joi.object({
             email: Joi.string().required(),
         });
@@ -104,7 +102,6 @@ exports.me = async function(req, res) {
         }
 
     } catch (error) {
-        console.log(error);
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })
