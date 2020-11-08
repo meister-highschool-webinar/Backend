@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const web = require('../modules/slack').slack();
+const randtoken = require('rand-token')
 
 const { user } = require('../models');
 
@@ -48,20 +49,34 @@ exports.login = async function(req, res) {
                 message: "유효하지 않은 사용자입니다."
             });
         }
+        const startTime = new Date("2020-11-26 13:30:00");
+        const endTime = new Date("2020-11-26 14:30:00");
+        const currentTime = new Date();
+
         const accessToken = jwt.sign({
             ...result.dataValues
         }, process.env.JWT_SALT)
+        const refreshToken = randtoken.uid(256)
+
+        await user.update({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            token_create_time: currentTime
+        }, {
+            where: {
+                email
+            }
+        })
 
         const responseData = {
             accessToken,
+            refreshToken,
             userId: result.dataValues.id,
             studentId: result.dataValues.student_id,
             studentName: result.dataValues.student_name,
         }
 
-        const startTime = new Date("2020-11-26 13:30:00");
-        const endTime = new Date("2020-11-26 14:30:00");
-        const currentTime = new Date();
+
 
         if (startTime <= currentTime && currentTime <= endTime) {
             await user.update({
@@ -96,7 +111,6 @@ exports.adminLogin = (req, res) => {
     const accessToken = jwt.sign({
         token: process.env.access_token
     }, process.env.JWT_ADMIN_SALT)
-
     const responseData = {
         accessToken
     }
