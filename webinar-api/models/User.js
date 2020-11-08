@@ -34,7 +34,10 @@ module.exports = (sequelize) => (
         number: {
             type: DataTypes.INTEGER
         },
-        token: {
+        access_token: {
+            type: DataTypes.STRING
+        },
+        refresh_token: {
             type: DataTypes.STRING
         },
         token_create_time: {
