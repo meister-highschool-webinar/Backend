@@ -7,7 +7,7 @@ const { getTimetable } = require("../controllers/timetable.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
 const { qna } = require("../controllers/survey.controllers");
 const { getWinnerList } = require('../controllers/luckdraw.controller');
-
+const { userAuth } = require('../middlewares/auth.middle');
 const router = Router();
 
 /**
@@ -38,7 +38,7 @@ const router = Router();
  */
 router.use('/auth', auth);
 router.use('/docs', docs);
-router.get('/timetable-list', getTimetable);
+router.get('/timetable-list', userAuth, getTimetable);
 
 /**
  * @swagger
@@ -59,7 +59,7 @@ router.get('/timetable-list', getTimetable);
  *          500:
  *            description: "DB 연결 에러"
  */
-router.get('/webinar-info', getWebinar);
+router.get('/webinar-info', userAuth, getWebinar);
 
 /**
  * @swagger
@@ -81,7 +81,7 @@ router.get('/webinar-info', getWebinar);
  *            description: "DB 연결 에러"
  */
 
-router.get('/qna', qna);
+router.get('/qna', userAuth, qna);
 
 /**
  * @swagger
@@ -103,6 +103,6 @@ router.get('/qna', qna);
  *            description: "DB 연결 에러"
  */
 
-router.get('/winner', getWinnerList);
+router.get('/winner', userAuth, getWinnerList);
 
 module.exports = router;

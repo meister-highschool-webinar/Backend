@@ -54,7 +54,7 @@ exports.signup = async function(req, res) {
             where: {
                 grade,
                 number,
-                _class
+                class: _class
             },
             attributes: ['email']
         });
@@ -82,6 +82,7 @@ exports.signup = async function(req, res) {
         });
 
     } catch (error) {
+        console.log(error)
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })

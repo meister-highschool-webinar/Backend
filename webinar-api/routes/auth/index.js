@@ -2,6 +2,7 @@ const { Router } = require('express');
 
 const { login, adminLogin } = require('../../controllers/login.controller');
 const { signup } = require("../../controllers/signup.controller")
+const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 
@@ -13,6 +14,23 @@ const { exportToFile } = require("../../controllers/file.controller");
 const router = Router();
 
 router.use('/luckdraw', adminAuth, luckdraw);
+
+/**
+ * @swagger
+ * definitions:
+ *   access-token:
+ *     in: "header"
+ *     name: "x-access-token"
+ *     description: "유효성 검사를 위한 access token을 입력 받습니다."
+ *     required: true
+ *     type: string
+ *   refresh-token:
+ *     in: "header"
+ *     name: "refresh-token"
+ *     description: "access token을 재발급 받기 위한 refresh token을 입력 받습니다."
+ *     required: true
+ *     type: string
+ */
 
 /**
  * @swagger
@@ -77,14 +95,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       x-access-token:
  *         type: string
  *         description: access token
- *   refresh_token:
- *     type: string
- *     require:
- *       - x-access-token
- *     properties:
- *       x-access-token:
- *         type: string
- *         description: refresh token
  *   timetable_input_request:
  *     type: object
  *     require:
@@ -151,12 +161,39 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       password:
  *         type: string
  *         description: 비밀번호
+ *   me_request:
+ *     type: object
+ *     required:
+ *       - email
+ *     properties:
+ *       email:
+ *         type: string
+ *         description: 이메일
  *   auth_response:
  *     type: object
  *     required:
  *       - accessToken
  *       - userId
- *       - studentId
+ *       - refreshToken
+ *       - studentName
+ *     properties:
+ *       accessToken:
+ *         type: string
+ *         description: 발급된 access token
+ *       refreshToken:
+ *         type: string
+ *         description: 발급된 refresh token
+ *       userId:
+ *         type: integer
+ *         description: 유저 id
+ *       studentName:
+ *         type: string
+ *         description: 학생 이름
+ *   refresh_response:
+ *     type: object
+ *     required:
+ *       - accessToken
+ *       - userId
  *       - studentName
  *     properties:
  *       accessToken:
@@ -165,9 +202,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       userId:
  *         type: integer
  *         description: 유저 id
- *       studentId:
- *         type: integer
- *         description: 학생 번호
  *       studentName:
  *         type: string
  *         description: 학생 이름
@@ -228,6 +262,77 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *              $ref: "#/definitions/Response_error"
  */
 router.post('/login', login);
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/refresh:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "Login"
+ *        description: ""
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/refresh-token"
+ *        - in: "body"
+ *          name: "body"
+ *          description: "로그인을 위해 이메일과 비밀번호 전달"
+ *          required: true
+ *          schema:
+ *            $ref: "#/definitions/me_request"
+ *        responses:
+ *          200:
+ *            description: "로그인 결과"
+ *            schema:
+ *              $ref: "#/definitions/refresh_response"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ */
+router.post('/refresh', refresh);
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/me:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "access token이 유효한지 체크"
+ *        description: ""
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/access-token"
+ *        - in: "body"
+ *          name: "body"
+ *          description: "해당하는 이메일에 access token이 유효한지 체크를 위한 email"
+ *          required: true
+ *          schema:
+ *            $ref: "#/definitions/me_request"
+ *        responses:
+ *          200:
+ *            description: "유효성 검사 결과"
+ *            schema:
+ *              $ref: "#/definitions/Response_success"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ */
+router.post('/me', me);
 
 /**
  * @swagger

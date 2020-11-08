@@ -1,26 +1,42 @@
 const jwt = require('jsonwebtoken');
 
 const verifyJWT = (accessToken, salt) => new Promise((res, rej) => {
-  jwt.verify(accessToken, salt, (err, decoded) => {
-    if(err) rej(err);
-    res(decoded);
-  });
+    jwt.verify(accessToken, salt, (err, decoded) => {
+        if (err) rej(err);
+        res(decoded);
+    });
 })
 
 exports.verifyJWT = verifyJWT;
+/**
+ * @swagger
+ * definitions:
+ *   access-token:
+ *     in: "header"
+ *     name: "x-access-token"
+ *     description: "유효성 검사를 위한 access token을 입력 받습니다."
+ *     required: true
+ *     type: string
+ *   refresh-token:
+ *     in: "header"
+ *     name: "refresh-token"
+ *     description: "access token을 재발급 받기 위한 refresh token을 입력 받습니다."
+ *     required: true
+ *     type: string
+ */
 
-exports.userAuth = async (req, res, next) => {
-  try {
-    const headers = req.headers;
-    const payload = await verifyJWT(headers.authorization);
-    req.decoded = payload;
-    next();
-  } catch (e) {
-    res.status(401).json({
-      msg: "인증에 실패하였습니다.",
-      msgId: 401
-    })
-  }
+exports.userAuth = async(req, res, next) => {
+    try {
+        const headers = req.headers;
+        const payload = await verifyJWT(headers.authorization);
+        req.decoded = payload;
+        next();
+    } catch (e) {
+        res.status(401).json({
+            msg: "인증에 실패하였습니다.",
+            msgId: 401
+        })
+    }
 }
 
 /**
@@ -34,15 +50,15 @@ exports.userAuth = async (req, res, next) => {
  *     type: string
  */
 
-exports.adminAuth = async (req, res, next) => {
-  try {
-    const token = req.headers['x-access-token'] || req.query.token;
-    await verifyJWT(token, process.env.JWT_ADMIN_SALT);
-    next();
-  } catch (e) {
-    res.status(401).json({
-      msg: "인증에 실패하였습니다.",
-      msgId: 401
-    })
-  }
+exports.adminAuth = async(req, res, next) => {
+    try {
+        const token = req.headers['x-access-token'] || req.query.token;
+        await verifyJWT(token, process.env.JWT_ADMIN_SALT);
+        next();
+    } catch (e) {
+        res.status(401).json({
+            msg: "인증에 실패하였습니다.",
+            msgId: 401
+        })
+    }
 }

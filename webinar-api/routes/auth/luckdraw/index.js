@@ -1,5 +1,5 @@
 const { startLuckdraw, resetWinnerList } = require('../../../controllers/luckdraw.controller');
-
+const { adminAuth } = require('../../../middlewares/auth.middle');
 const router = require('express').Router();
 
 /**
@@ -108,7 +108,7 @@ const router = require('express').Router();
  *              $ref: "#/definitions/luckdraw_start_response"
  */
 
-router.post('/start', startLuckdraw);
-router.patch('/reset', resetWinnerList);
+router.post('/start', adminAuth, startLuckdraw);
+router.patch('/reset', adminAuth, resetWinnerList);
 
 module.exports = router;

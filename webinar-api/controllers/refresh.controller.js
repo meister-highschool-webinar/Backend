@@ -28,7 +28,7 @@ exports.refresh = async function(req, res) {
             where: {
                 email
             },
-            attributes: ['id', 'student_name', 'refresh_token']
+            attributes: ['email', 'id', 'student_name', 'refresh_token']
         });
         if (!result || result.dataValues.refresh_token != refreshToken) {
             return res.status(400).send({
@@ -38,7 +38,7 @@ exports.refresh = async function(req, res) {
         const currentTime = new Date();
 
         const accessToken = jwt.sign({
-            ...result.dataValues
+            ...result.dataValues.email
         }, process.env.JWT_SALT)
 
         await user.update({
@@ -64,10 +64,10 @@ exports.refresh = async function(req, res) {
     }
 };
 
-exports.me = (req, res) => {
+exports.me = async function(req, res) {
     try {
         const headers = req.headers;
-        const { accessToken, salt } = headers.authorization;
+        const accessToken = headers["x-access-token"];
         const param = Joi.object({
             email: Joi.string().required(),
         });
@@ -88,7 +88,7 @@ exports.me = (req, res) => {
             attributes: ['id', 'student_name', 'access_token']
         });
 
-        if (accessToken === result.dataValuesr.refresh_token) {
+        if (accessToken === result.dataValues.access_token) {
             res.status(500).send({
                 message: "유효한 access token입니다"
             })
@@ -99,6 +99,7 @@ exports.me = (req, res) => {
         }
 
     } catch (error) {
+        console.log(error);
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })

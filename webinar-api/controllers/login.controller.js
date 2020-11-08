@@ -54,9 +54,9 @@ exports.login = async function(req, res) {
         const currentTime = new Date();
 
         const accessToken = jwt.sign({
-            ...result.dataValues
+            ...result.dataValues.email
         }, process.env.JWT_SALT)
-        const refreshToken = randtoken.uid(256)
+        const refreshToken = randtoken.uid(128)
 
         await user.update({
             access_token: accessToken,
@@ -89,6 +89,7 @@ exports.login = async function(req, res) {
 
         res.status(200).send(responseData)
     } catch (error) {
+        console.log(error)
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })
