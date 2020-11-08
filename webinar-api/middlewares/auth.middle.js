@@ -13,8 +13,8 @@ exports.verifyJWT = verifyJWT;
  * definitions:
  *   access-token:
  *     in: "header"
- *     name: "x-access-token"
- *     description: "유효성 검사를 위한 access token을 입력 받습니다."
+ *     name: "access-token"
+ *     description: "사용자 access token을 입력 받습니다."
  *     required: true
  *     type: string
  *   refresh-token:
