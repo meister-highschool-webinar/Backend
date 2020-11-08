@@ -15,22 +15,6 @@ const router = Router();
 
 router.use('/luckdraw', adminAuth, luckdraw);
 
-/**
- * @swagger
- * definitions:
- *   access-token:
- *     in: "header"
- *     name: "x-access-token"
- *     description: "유효성 검사를 위한 access token을 입력 받습니다."
- *     required: true
- *     type: string
- *   refresh-token:
- *     in: "header"
- *     name: "refresh-token"
- *     description: "access token을 재발급 받기 위한 refresh token을 입력 받습니다."
- *     required: true
- *     type: string
- */
 
 /**
  * @swagger

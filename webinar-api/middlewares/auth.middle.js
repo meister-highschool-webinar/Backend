@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+const { user } = require('../models');
 const verifyJWT = (accessToken, salt) => new Promise((res, rej) => {
     jwt.verify(accessToken, salt, (err, decoded) => {
         if (err) rej(err);
@@ -27,11 +27,22 @@ exports.verifyJWT = verifyJWT;
 
 exports.userAuth = async(req, res, next) => {
     try {
-        const headers = req.headers;
-        const payload = await verifyJWT(headers.authorization);
-        req.decoded = payload;
-        next();
+        const token = req.headers['access-token'];
+        const result = await user.findOne({
+            where: {
+                access_token: token
+            },
+            attributes: ['id']
+        });
+        if (!result) {
+            res.status(401).json({
+                msg: "인증에 실패하였습니다.",
+                msgId: 401
+            })
+        }
+        next()
     } catch (e) {
+        console.log(e)
         res.status(401).json({
             msg: "인증에 실패하였습니다.",
             msgId: 401
