@@ -96,6 +96,44 @@ exports.login = async function(req, res) {
     }
 };
 
+exports.logout = async function(req, res) {
+    try {
+        const headers = req.headers;
+
+        const accessToken = headers["access-token"];
+
+        const result = await user.findOne({
+            where: {
+                access_token: accessToken
+            },
+            attributes: ['email']
+        });
+
+        if (result === null) return res.status(400).send({
+            message: "유효하지 않은 access token입니다"
+        });
+
+        const email = result.dataValues.email
+        await user.update({
+            access_token: null,
+            refresh_token: null,
+            token_create_time: null
+        }, {
+            where: {
+                email
+            }
+        })
+
+        res.status(200).send({
+            message: "성공적으로 로그아웃되었습니다"
+        })
+    } catch (error) {
+        res.status(500).send({
+            message: "서버에서 오류가 발생하였습니다."
+        })
+    }
+};
+
 exports.adminLogin = (req, res) => {
     if (req.body.password !== process.env.access_token) {
         if (req.body.password === process.env.access_t0ken) {

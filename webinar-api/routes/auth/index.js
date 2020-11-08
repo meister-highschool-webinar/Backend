@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const { login, adminLogin } = require('../../controllers/login.controller');
+const { login, adminLogin, logout } = require('../../controllers/login.controller');
 const { signup } = require("../../controllers/signup.controller")
 const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
@@ -317,6 +317,36 @@ router.post('/refresh', refresh);
  *              $ref: "#/definitions/Response_error"
  */
 router.post('/me', me);
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /auth/logout:
+ *      post:
+ *        security:
+ *        -
+ *        tags:
+ *        - "Auth"
+ *        summary: "logout"
+ *        description: ""
+ *        consumes:
+ *        - "application/json"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/access-token"
+ *        responses:
+ *          200:
+ *            description: "로그아웃 결과"
+ *            schema:
+ *              $ref: "#/definitions/Response_success"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ */
+router.post('/logout', logout);
 
 /**
  * @swagger
