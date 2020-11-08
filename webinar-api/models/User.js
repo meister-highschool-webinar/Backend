@@ -33,6 +33,12 @@ module.exports = (sequelize) => (
         },
         number: {
             type: DataTypes.INTEGER
+        },
+        token: {
+            type: DataTypes.STRING
+        },
+        token_create_time: {
+            type: DataTypes.DATE
         }
     })
 )
