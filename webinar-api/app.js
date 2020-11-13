@@ -15,8 +15,8 @@ app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 app.use(helmet());
 app.use(logger('combined'));
 app.use(cors({
-  "origin": "*",
-  "allowedHeaders": "Content-Type,x-access-token,Access-Control-Allow-Origin"
+    "origin": "*",
+    "allowedHeaders": "Content-Type,x-access-token,Access-Control-Allow-Origin"
 }));
 app.options('*', cors());
 app.use(express.json());
@@ -26,11 +26,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', indexRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.get("/", function(req, res) {
+    res.sendfile("index.html");
 });
 
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    next(createError(404));
+});
 
 
 module.exports = app;

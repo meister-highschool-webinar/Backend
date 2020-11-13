@@ -2,6 +2,7 @@ const { Router } = require('express');
 
 const { login, adminLogin, logout } = require('../../controllers/login.controller');
 const { signup } = require("../../controllers/signup.controller")
+const { google } = require("../../controllers/google.controller")
 const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
@@ -281,6 +282,8 @@ router.post('/login', login);
  *              $ref: "#/definitions/Response_error"
  */
 router.post('/refresh', refresh);
+
+router.post("/google", google);
 
 
 /**

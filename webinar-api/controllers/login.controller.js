@@ -128,6 +128,7 @@ exports.logout = async function(req, res) {
             message: "성공적으로 로그아웃되었습니다"
         })
     } catch (error) {
+
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })
