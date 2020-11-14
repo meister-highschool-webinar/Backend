@@ -17,17 +17,28 @@ const getSession = (req) => {
     return result;
 };
 
-exports.googleLogin = async(
-    accessToken, refreshToken, profile, cb) => {
-    // const email = profile.emails[0].value;
-    console.log(accessToken)
-    console.log(refreshToken)
-    console.log(profile)
-        // console.log(cb)
+exports.googleLogin = async function(
+    accessToken, refreshToken, profile, done) {
 
 
-    console.log(1)
-        // try {
+    try {
+        console.log(accessToken)
+        console.log(profile)
+        console.log(cb)
+        const email = profile.emails[0].value;
+        const userInfo = await user.findOne({
+            where: {
+                email
+            },
+            attributes: ['student_name', 'id', 'email', 'school_name', "number", "grade", "class"]
+        });
+        if (!userInfo) {
+            return done(null, { email })
+        }
+    } catch (error) {
+        return done(null, {});
+    }
+    // try {
 
     //     con
     // const userInfo = await Users.findOne({
@@ -61,6 +72,20 @@ exports.getSessionInfo = async(req, res) => {
     res.send(sessionInfo);
 }
 
+
+exports.verifyOauthLogin = (req, res) => {
+    const session = getPassportSession(req);
+    console.log(session)
+    if (session) {
+        if (session['statusCode']) {
+            res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=${session['statusCode']}`);
+        } else {
+            res.redirect(`${process.env.CLIENT_DOMAIN}/signUp`);
+        }
+        return;
+    }
+    res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
+}
 exports.login = async function(req, res) {
     try {
         const param = Joi.object({
