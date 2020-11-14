@@ -6,6 +6,61 @@ const randtoken = require('rand-token')
 
 const { user } = require('../models');
 
+
+const getPassportSession = (req) => {
+    const result = req.user;
+    return result;
+};
+
+const getSession = (req) => {
+    const result = (req.session) ? req.session : undefined;
+    return result;
+};
+
+exports.googleLogin = async(
+    accessToken, refreshToken, profile, cb) => {
+    // const email = profile.emails[0].value;
+    console.log(accessToken)
+    console.log(refreshToken)
+    console.log(profile)
+        // console.log(cb)
+
+
+    console.log(1)
+        // try {
+
+    //     con
+    // const userInfo = await Users.findOne({
+    //     attributes: ['email', 'admin', 'name', 'phonenumber', 'verify_email'],
+    //     where: { email },
+    // });
+    // if (!userInfo) {
+    //     return cb(undefined, { email });
+    // }
+    // const {
+    //     admin,
+    //     name,
+    //     phonenumber,
+    //     verify_email,
+    // } = userInfo;
+    // return cb(undefined, {
+    //     email,
+    //     admin,
+    //     name,
+    //     phonenumber,
+    //     verify_email,
+    //     statusCode: errorHandler.STATUS_CODE.success,
+    //     local: false,
+    // });
+    // } catch (error) {
+    //     return cb(undefined, {});
+    // }
+}
+exports.getSessionInfo = async(req, res) => {
+    const sessionInfo = req.user || {};
+    res.send(sessionInfo);
+}
+
 exports.login = async function(req, res) {
     try {
         const param = Joi.object({

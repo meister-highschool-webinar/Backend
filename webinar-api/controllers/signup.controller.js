@@ -88,3 +88,72 @@ exports.signup = async function(req, res) {
         })
     }
 };
+
+
+exports.register = async(req, res) => {
+    const {
+        email,
+        name,
+        phonenumber,
+        password,
+    } = req.body;
+    const passportUser = AuthHandler.getPassportSession(req);
+    const passportEmail = (passportUser) ? passportUser['email'] : undefined;
+
+    try {
+        if (passportEmail) {
+            AuthHandler.validateCheck(undefined, String(phonenumber), String(passportEmail));
+        } else {
+            AuthHandler.validateCheck(String(password), String(phonenumber), String(email));
+        }
+
+        const updateData = {
+            email: (!passportEmail) ? email : passportEmail,
+            name,
+            phonenumber,
+            verify_email: !!passportEmail,
+            password: (!passportEmail) ? sha256(password) : undefined,
+            admin: false,
+        };
+        const result = await Users.findOne({ where: { email: updateData.email } });
+        if (result) {
+            throw new errorHandler.CustomError(errorHandler.STATUS_CODE.alreadyRegistered);
+        }
+        await Users.create(updateData);
+        // local register
+        if (!passportEmail) {
+            const token = randomstring.generate();
+            await EmailToken.create({
+                email,
+                token,
+                send_count: 1,
+            });
+            // send email for verifying
+            await EmailService.send(
+                [email],
+                constants.ADMIN_EMAIL,
+                VERIFY_TEMPLATE.html.replace('{token}', token).replace('{email}', email),
+                VERIFY_TEMPLATE.subject,
+            );
+            const query = SCHEDULE_TEMPLATE.create
+                .replace('{eventName}', `${email.replace('@', '_').replace('.', '_')}`)
+                .replace('{days}', '2')
+                .replace('{query}', `DELETE FROM Users WHERE (email = "${email}");`);
+            await db.query(query);
+        }
+        // for resending token request
+        if (req.session) {
+            req.session.register = true;
+            req.session.email = email;
+        }
+        res.send({ statusCode: errorHandler.STATUS_CODE.success });
+    } catch (error) {
+        if (error instanceof errorHandler.CustomError) {
+            res.send(error.getData());
+        } else {
+            log.error(error);
+            await Slack.send('error', JSON.stringify(error));
+            res.send({ statusCode: '500', errorMessage: errorHandler.CustomError.MESSAGE['500'] });
+        }
+    }
+};

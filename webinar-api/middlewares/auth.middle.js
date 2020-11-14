@@ -25,6 +25,17 @@ exports.verifyJWT = verifyJWT;
  *     type: string
  */
 
+exports.authenticateUser = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.status(401).json({
+            msg: "인증에 실패하였습니다.",
+            msgId: 401
+        })
+    }
+};
+
 exports.userAuth = async(req, res, next) => {
     try {
         const token = req.headers['access-token'];
