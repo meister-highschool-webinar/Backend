@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
+const session = require('express-session');
 const helmet = require("helmet");
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -26,6 +27,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: "super+user",
+    cookie: { maxAge: 60 * 60 * 1000, secure: false },
+    resave: true,
+    saveUninitialized: false,
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(async(user, done) => {
@@ -40,7 +47,7 @@ passport.deserializeUser((user, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback",
+    callbackURL: `${process.env.SERVER_DOMAIN}/auth/google/callback`,
 }, googleLogin));
 
 /**

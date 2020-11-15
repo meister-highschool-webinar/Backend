@@ -9,6 +9,7 @@ const { user } = require('../models');
 
 const getPassportSession = (req) => {
     const result = req.user;
+    console.log(result)
     return result;
 };
 
@@ -18,25 +19,38 @@ const getSession = (req) => {
 };
 
 exports.googleLogin = async function(
-    accessToken, refreshToken, profile, done) {
+    accessToken, refreshToken, profile, cb) {
 
 
     try {
-        console.log(accessToken)
-        console.log(profile)
-        console.log(cb)
-        const email = profile.emails[0].value;
+
+        const user_email = profile.emails[0].value;
+        console.log(user_email)
         const userInfo = await user.findOne({
             where: {
-                email
+                email: user_email
             },
             attributes: ['student_name', 'id', 'email', 'school_name', "number", "grade", "class"]
         });
         if (!userInfo) {
-            return done(null, { email })
+            // console.log(cb(undefined, { email }))
+            return cb(undefined, { user_email })
         }
+        const {
+            student_name,
+            id,
+            email,
+            school_name,
+        } = userInfo;
+        return cb(undefined, {
+            student_name,
+            id,
+            school_name,
+            email,
+        });
     } catch (error) {
-        return done(null, {});
+        console.log(error)
+        return cb(undefined, {});
     }
     // try {
 
@@ -73,19 +87,27 @@ exports.getSessionInfo = async(req, res) => {
 }
 
 
-exports.verifyOauthLogin = (req, res) => {
-    const session = getPassportSession(req);
-    console.log(session)
-    if (session) {
-        if (session['statusCode']) {
-            res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=${session['statusCode']}`);
-        } else {
-            res.redirect(`${process.env.CLIENT_DOMAIN}/signUp`);
+exports.verifyOauthLogin = async function(req, res) {
+    try {
+        console.log(req.user)
+        const session = getPassportSession(req);
+        console.log(session)
+        if (session) {
+            if (session['statusCode']) {
+                res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=${session['statusCode']}`);
+            } else {
+                res.redirect(`${process.env.CLIENT_DOMAIN}/signUp`);
+            }
+            return;
         }
-        return;
+        res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
+
+
+    } catch (error) {
+        res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
     }
-    res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
 }
+
 exports.login = async function(req, res) {
     try {
         const param = Joi.object({
