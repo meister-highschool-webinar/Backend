@@ -72,15 +72,11 @@ app.get("/auth/google/callback", passport.authenticate("google", {
 app.get('/auth/verify/oauth', verifyOauthLogin);
 
 app.use('/api', indexRouter);
-// router.get('/verify/local', AuthHandler.verifyLocalLogin);
 
-// router.get('/verify/oauth', AuthHandler.verifyOauthLogin);
+app.use(function(req, res, next) {
 
-// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-
-//     next(createError(404));
-// });
+    next(createError(404));
+});
 
 
 module.exports = app;

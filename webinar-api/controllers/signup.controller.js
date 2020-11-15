@@ -4,8 +4,14 @@ const Joi = require('joi');
 const web = require('../modules/slack').slack();
 
 const { user, schoolCode } = require('../models');
-
+const getPassportSession = (req) => {
+    const result = req.user;
+    console.log(result)
+    return result;
+};
 exports.signup = async function(req, res) {
+    const passportUser = getPassportSession(req);
+    const passportEmail = (passportUser) ? passportUser['email'] : undefined
     try {
         const param = Joi.object({
             schoolCode: Joi.string().required(),
@@ -32,18 +38,29 @@ exports.signup = async function(req, res) {
             password
         } = req.body;
 
+        if (email != passportEmail) return res.status(400).send({
+            message: "요청하신 이메일이 잘못되었습니다"
+        });
         const code = await schoolCode.findOne({
             where: {
                 code: school_code
             },
             attributes: ['code', "name"]
         });
-
-        const result = await user.findOne({
+        const email_check = await user.findOne({
             where: {
                 email
             },
             attributes: ['email']
+        });
+        if (email_check != null) return res.status(400).send({
+            message: "가입되어 있지 않습니다"
+        });
+        const result = await user.findOne({
+            where: {
+                email
+            },
+            attributes: ['student_name']
         });
 
         if (result != null) return res.status(400).send({
@@ -86,74 +103,5 @@ exports.signup = async function(req, res) {
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })
-    }
-};
-
-
-exports.register = async(req, res) => {
-    const {
-        email,
-        name,
-        phonenumber,
-        password,
-    } = req.body;
-    const passportUser = AuthHandler.getPassportSession(req);
-    const passportEmail = (passportUser) ? passportUser['email'] : undefined;
-
-    try {
-        if (passportEmail) {
-            AuthHandler.validateCheck(undefined, String(phonenumber), String(passportEmail));
-        } else {
-            AuthHandler.validateCheck(String(password), String(phonenumber), String(email));
-        }
-
-        const updateData = {
-            email: (!passportEmail) ? email : passportEmail,
-            name,
-            phonenumber,
-            verify_email: !!passportEmail,
-            password: (!passportEmail) ? sha256(password) : undefined,
-            admin: false,
-        };
-        const result = await Users.findOne({ where: { email: updateData.email } });
-        if (result) {
-            throw new errorHandler.CustomError(errorHandler.STATUS_CODE.alreadyRegistered);
-        }
-        await Users.create(updateData);
-        // local register
-        if (!passportEmail) {
-            const token = randomstring.generate();
-            await EmailToken.create({
-                email,
-                token,
-                send_count: 1,
-            });
-            // send email for verifying
-            await EmailService.send(
-                [email],
-                constants.ADMIN_EMAIL,
-                VERIFY_TEMPLATE.html.replace('{token}', token).replace('{email}', email),
-                VERIFY_TEMPLATE.subject,
-            );
-            const query = SCHEDULE_TEMPLATE.create
-                .replace('{eventName}', `${email.replace('@', '_').replace('.', '_')}`)
-                .replace('{days}', '2')
-                .replace('{query}', `DELETE FROM Users WHERE (email = "${email}");`);
-            await db.query(query);
-        }
-        // for resending token request
-        if (req.session) {
-            req.session.register = true;
-            req.session.email = email;
-        }
-        res.send({ statusCode: errorHandler.STATUS_CODE.success });
-    } catch (error) {
-        if (error instanceof errorHandler.CustomError) {
-            res.send(error.getData());
-        } else {
-            log.error(error);
-            await Slack.send('error', JSON.stringify(error));
-            res.send({ statusCode: '500', errorMessage: errorHandler.CustomError.MESSAGE['500'] });
-        }
     }
 };

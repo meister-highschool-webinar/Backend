@@ -246,7 +246,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *            schema:
  *              $ref: "#/definitions/Response_error"
  */
-router.post('/login', login);
+// router.post('/login', login);
 
 /**
  * @swagger
@@ -283,7 +283,6 @@ router.post('/login', login);
  */
 router.post('/refresh', refresh);
 
-router.post("/google", google);
 
 
 /**
@@ -349,7 +348,7 @@ router.post('/me', me);
  *            schema:
  *              $ref: "#/definitions/Response_error"
  */
-router.post('/logout', logout);
+// router.post('/logout', logout);
 
 /**
  * @swagger
