@@ -1,14 +1,46 @@
 const { Router } = require('express');
+const passport = require('passport');
+
 
 const docs = require('./docs');
 const auth = require('./auth');
-
 const { getTimetable } = require("../controllers/timetable.controller");
+const { googleLogin } = require("../controllers/login.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
 const { qna } = require("../controllers/survey.controllers");
 const { getWinnerList } = require('../controllers/luckdraw.controller');
 const { userAuth } = require('../middlewares/auth.middle');
 const router = Router();
+
+
+
+/**
+ * @swagger
+ * /auth/google:
+ *    get:
+ *      tags:
+ *          - Login
+ *      summary: google OAuth.
+ *      description: redirect to google login
+ *      responses:
+ *        200:
+ *          description: '{ statusCode: string, errorMessage: string }'
+ */
+
+
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *    get:
+ *      tags:
+ *          - logout
+ *      summary: logout.
+ *      responses:
+ *        200:
+ *          description: '{ statusCode: string, errorMessage: string }'
+ */
+// router.get('/logout', AuthHandler.logout);
 
 /**
  * @swagger
@@ -20,7 +52,7 @@ const router = Router();
 /**
  * @swagger
  *  paths:
- *    /timetable-list:
+ *    /api/timetable-list:
  *      get:
  *        tags:
  *        - "Webinar"
@@ -49,7 +81,7 @@ router.get('/timetable-list', userAuth, getTimetable);
 /**
  * @swagger
  *  paths:
- *    /webinar-info:
+ *    /api/webinar-info:
  *      get:
  *        tags:
  *        - "Webinar"
@@ -76,7 +108,7 @@ router.get('/webinar-info', userAuth, getWebinar);
 /**
  * @swagger
  *  paths:
- *    /qna:
+ *    /api/qna:
  *      get:
  *        tags:
  *        - "Survey"
@@ -100,7 +132,7 @@ router.get('/qna', userAuth, qna);
 /**
  * @swagger
  *  paths:
- *    /winner:
+ *    /api/winner:
  *      get:
  *        tags:
  *        - "Winner"
@@ -120,5 +152,6 @@ router.get('/qna', userAuth, qna);
  */
 
 router.get('/winner', userAuth, getWinnerList);
+
 
 module.exports = router;

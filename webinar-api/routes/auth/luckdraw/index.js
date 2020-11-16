@@ -50,7 +50,7 @@ const router = require('express').Router();
 /**
  * @swagger
  *  paths:
- *    /auth/luckdraw/reset:
+ *    /api/auth/luckdraw/reset:
  *      patch:
  *        tags:
  *        - "Luckdraw"
@@ -73,7 +73,7 @@ const router = require('express').Router();
  *            description: "서버 에러"
  *            schema:
  *              $ref: "#/definitions/luckdraw_start_response"      
- *    /auth/luckdraw/start:
+ *    /api/auth/luckdraw/start:
  *      post:
  *        tags:
  *        - "Luckdraw"

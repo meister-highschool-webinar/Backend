@@ -6,133 +6,79 @@ const randtoken = require('rand-token')
 
 const { user } = require('../models');
 
-exports.login = async function(req, res) {
+
+const getPassportSession = (req) => {
+    const result = req.user;
+    console.log(result)
+    return result;
+};
+
+const getSession = (req) => {
+    const result = (req.session) ? req.session : undefined;
+    return result;
+};
+
+exports.googleLogin = async function(
+    accessToken, refreshToken, profile, cb) {
     try {
-        const param = Joi.object({
-            email: Joi.string().required(),
-            password: Joi.string().required(),
-
+        const user_email = profile.emails[0].value;
+        const userInfo = await user.findOne({
+            where: {
+                email: user_email
+            },
+            attributes: ['student_name', 'id', 'email', 'school_name', "number", "grade", "class"]
         });
-        if (param.validate(req.body).error) {
-            res.status(400).send({
-                message: '공란이 존재합니다.'
-            })
+        if (!userInfo) {
+            return cb(undefined, { user_email })
         }
-
         const {
+            studentName: student_name,
+            id,
             email,
-            password
-        } = req.body;
-
-        const result = await user.findOne({
-            where: {
-                email
-            },
-            attributes: ['student_name', 'id', 'email', 'pw_hash']
+            schoolName: school_name,
+            class: _class,
+            grade,
+            number,
+        } = userInfo;
+        return cb(undefined, {
+            studentName,
+            id,
+            schoolName,
+            email,
+            grade,
+            number,
+            class: _class
         });
-        if (!email) {
-            return res.status(400).send({
-                message: "email을 입력해주세요"
-            });
-        }
-        if (!password) {
-            return res.status(400).send({
-                message: "패스워드를 입력해주세요"
-            });
-        }
-        if (result === null) return res.status(400).send({
-            message: "사용자 등록을 하세요"
-        });
-        const check = await bcrypt.compare(password, result.dataValues.pw_hash);
-        if (!check) {
-            return res.status(400).send({
-                message: "유효하지 않은 사용자입니다."
-            });
-        }
-        const startTime = new Date("2020-11-26 13:30:00");
-        const endTime = new Date("2020-11-26 14:30:00");
-        const currentTime = new Date();
-
-        const accessToken = jwt.sign({
-            ...result.dataValues.email
-        }, process.env.JWT_SALT)
-        const refreshToken = randtoken.uid(128)
-
-        await user.update({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            token_create_time: currentTime
-        }, {
-            where: {
-                email
-            }
-        })
-
-        const responseData = {
-            accessToken,
-            refreshToken,
-            userId: result.dataValues.id,
-            studentName: result.dataValues.student_name,
-        }
-
-
-
-        if (startTime <= currentTime && currentTime <= endTime) {
-            await user.update({
-                login_flag: 1
-            }, {
-                where: {
-                    id: responseData.userId
-                }
-            })
-        }
-
-        res.status(200).send(responseData)
     } catch (error) {
-
-        res.status(500).send({
-            message: "서버에서 오류가 발생하였습니다."
-        })
+        return cb(undefined, {});
     }
-};
+}
+exports.getSessionInfo = async(req, res) => {
+    const sessionInfo = req.user || {};
+    res.send(sessionInfo);
+}
 
-exports.logout = async function(req, res) {
+
+exports.verifyOauthLogin = async function(req, res) {
     try {
-        const headers = req.headers;
-
-        const accessToken = headers["access-token"];
-
-        const result = await user.findOne({
-            where: {
-                access_token: accessToken
-            },
-            attributes: ['email']
-        });
-
-        if (result === null) return res.status(400).send({
-            message: "유효하지 않은 access token입니다"
-        });
-
-        const email = result.dataValues.email
-        await user.update({
-            access_token: null,
-            refresh_token: null,
-            token_create_time: null
-        }, {
-            where: {
-                email
+        const session = getPassportSession(req);
+        console.log(session)
+        if (session) {
+            if (session['studentName']) {
+                res.redirect(`${process.env.CLIENT_DOMAIN}?studentName=${session['studentName']}`);
+            } else {
+                res.redirect(`${process.env.CLIENT_DOMAIN}/signUp`);
             }
-        })
+            return;
+        }
+        res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
 
-        res.status(200).send({
-            message: "성공적으로 로그아웃되었습니다"
-        })
+
     } catch (error) {
-        res.status(500).send({
-            message: "서버에서 오류가 발생하였습니다."
-        })
+        res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
     }
-};
+}
+
 
 exports.adminLogin = (req, res) => {
     if (req.body.password !== process.env.access_token) {
