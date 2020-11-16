@@ -110,7 +110,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       - class
  *       - number
  *       - email
- *       - password
  *       - studentName
  *     properties:
  *       schoolCode:
@@ -131,9 +130,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *       email:
  *         type: string
  *         description: 이메일
- *       password:
- *         type: string
- *         description: 비밀번호
  *   auth_request:
  *     type: object
  *     required:
@@ -214,141 +210,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *         description: 발급된 access token
  */
 
-/**
- * @swagger
- *  paths:
- *    /auth/login:
- *      post:
- *        security:
- *        -
- *        tags:
- *        - "Auth"
- *        summary: "Login"
- *        description: ""
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - in: "body"
- *          name: "body"
- *          description: "로그인을 위해 이메일과 비밀번호 전달"
- *          required: true
- *          schema:
- *            $ref: "#/definitions/auth_request"
- *        responses:
- *          200:
- *            description: "로그인 결과"
- *            schema:
- *              $ref: "#/definitions/auth_response"
- *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_error"
- */
-// router.post('/login', login);
-
-/**
- * @swagger
- *  paths:
- *    /auth/refresh:
- *      post:
- *        security:
- *        -
- *        tags:
- *        - "Auth"
- *        summary: "Login"
- *        description: ""
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/refresh-token"
- *        - in: "body"
- *          name: "body"
- *          description: "로그인을 위해 이메일과 비밀번호 전달"
- *          required: true
- *          schema:
- *            $ref: "#/definitions/me_request"
- *        responses:
- *          200:
- *            description: "로그인 결과"
- *            schema:
- *              $ref: "#/definitions/refresh_response"
- *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_error"
- */
-router.post('/refresh', refresh);
-
-
-
-/**
- * @swagger
- *  paths:
- *    /auth/me:
- *      post:
- *        security:
- *        -
- *        tags:
- *        - "Auth"
- *        summary: "access token이 유효한지 체크"
- *        description: ""
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
- *        - in: "body"
- *          name: "body"
- *          description: "해당하는 이메일에 access token이 유효한지 체크를 위한 email"
- *          required: true
- *          schema:
- *            $ref: "#/definitions/me_request"
- *        responses:
- *          200:
- *            description: "유효성 검사 결과"
- *            schema:
- *              $ref: "#/definitions/Response_success"
- *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_error"
- */
-router.post('/me', me);
-
-
-/**
- * @swagger
- *  paths:
- *    /auth/logout:
- *      post:
- *        security:
- *        -
- *        tags:
- *        - "Auth"
- *        summary: "logout"
- *        description: ""
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
- *        responses:
- *          200:
- *            description: "로그아웃 결과"
- *            schema:
- *              $ref: "#/definitions/Response_success"
- *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_error"
- */
-// router.post('/logout', logout);
 
 /**
  * @swagger

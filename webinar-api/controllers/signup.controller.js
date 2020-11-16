@@ -19,7 +19,6 @@ exports.signup = async function(req, res) {
             class: Joi.number().integer().required(),
             number: Joi.number().integer().required(),
             email: Joi.string().required(),
-            password: Joi.string().required(),
             studentName: Joi.string().required()
         });
         if (param.validate(req.body).error) {
@@ -79,16 +78,13 @@ exports.signup = async function(req, res) {
         if (result_another != null) return res.status(400).send({
             message: "이미 가입된 학년 반 번호입니다"
         });
-        const hash = await bcrypt.hash(password, 10);
-        const create_row = await user.create({
+        const create_row = await user.update({
             student_name: student_name,
             school_name: code.dataValues.name,
             grade: grade,
             class: _class,
-            number: number,
-            email: email,
-            pw_hash: hash
-        }).then(result => {
+            number: number
+        }, { where: { email: email } }).then(result => {
             res.status(200).send({
                 message: "회원가입을 성공하였습니다"
             })
