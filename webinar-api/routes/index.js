@@ -12,25 +12,6 @@ const { getWinnerList } = require('../controllers/luckdraw.controller');
 const { userAuth } = require('../middlewares/auth.middle');
 const router = Router();
 
-// passport.serializeUser(async(user, done) => {
-//     done(null, user);
-// });
-
-// passport.deserializeUser((user, done) => {
-//     done(null, user);
-// });
-
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     callbackURL: `${process.env.SERVER_DOMAIN}/api/auth/google/callback`,
-// }, googleLogin));
-
-// // router.get('/verify/local', AuthHandler.verifyLocalLogin);
-
-// // router.get('/verify/oauth', AuthHandler.verifyOauthLogin);
-// router.use(passport.initialize());
-// router.use(passport.session());
 
 
 /**
@@ -41,15 +22,16 @@ const router = Router();
  *          - Login
  *      summary: google OAuth.
  *      description: redirect to google login
+ *      responses:
+ *        200:
+ *          description: '{ statusCode: string, errorMessage: string }'
  */
-// router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
 
 
 
 /**
  * @swagger
- * /auth/logout:
+ * /api/auth/logout:
  *    get:
  *      tags:
  *          - logout
@@ -70,7 +52,7 @@ const router = Router();
 /**
  * @swagger
  *  paths:
- *    /timetable-list:
+ *    /api/timetable-list:
  *      get:
  *        tags:
  *        - "Webinar"
@@ -99,7 +81,7 @@ router.get('/timetable-list', userAuth, getTimetable);
 /**
  * @swagger
  *  paths:
- *    /webinar-info:
+ *    /api/webinar-info:
  *      get:
  *        tags:
  *        - "Webinar"
@@ -126,7 +108,7 @@ router.get('/webinar-info', userAuth, getWebinar);
 /**
  * @swagger
  *  paths:
- *    /qna:
+ *    /api/qna:
  *      get:
  *        tags:
  *        - "Survey"
@@ -150,7 +132,7 @@ router.get('/qna', userAuth, qna);
 /**
  * @swagger
  *  paths:
- *    /winner:
+ *    /api/winner:
  *      get:
  *        tags:
  *        - "Winner"

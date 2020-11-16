@@ -2,7 +2,6 @@ const { Router } = require('express');
 
 const { login, adminLogin, logout } = require('../../controllers/login.controller');
 const { signup } = require("../../controllers/signup.controller")
-const { google } = require("../../controllers/google.controller")
 const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
@@ -214,7 +213,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
 /**
  * @swagger
  *  paths:
- *    /auth/admin-login:
+ *    /api/auth/admin-login:
  *      post:
  *        security:
  *        -
@@ -250,7 +249,7 @@ router.post('/admin-login', adminLogin);
 /**
  * @swagger
  *  paths:
- *    /auth/webinar:
+ *    /api/auth/webinar:
  *      post:
  *        tags:
  *        - "Webinar"
@@ -280,7 +279,7 @@ router.post('/webinar', adminAuth, newWebinar);
 /**
  * @swagger
  *  paths:
- *    /auth/timetable:
+ *    /api/auth/timetable:
  *      post:
  *        tags:
  *        - "Timetable"
@@ -317,7 +316,7 @@ router.post('/timetable', adminAuth, inputTimetable);
 /**
  * @swagger
  *  paths:
- *    /auth/file-download:
+ *    /api/auth/file-download:
  *      get:
  *        tags:
  *        - "Webinar"
@@ -346,7 +345,7 @@ router.get('/file-download', adminAuth, exportToFile);
 /**
  * @swagger
  *  paths:
- *    /auth/signup:
+ *    /api/auth/signup:
  *      post:
  *        security:
  *        -

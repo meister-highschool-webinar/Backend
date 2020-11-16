@@ -58,6 +58,9 @@ passport.use(new GoogleStrategy({
  *          - Login
  *      summary: google OAuth.
  *      description: redirect to google login
+ *      responses:
+ *        200:
+ *          description: '{ statusCode: string, errorMessage: string }'
  */
 app.get(
     "/auth/google",
