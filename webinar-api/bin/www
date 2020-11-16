@@ -100,6 +100,7 @@ const { verifyJWT } = require("../middlewares/auth.middle");
 const { chatLog } = require("../models");
 
 let connected = 0;
+let msg_id = 0;
 io.on('connection', async(socket) => {
     const token = socket.request._query['token'];
     try {
@@ -113,31 +114,42 @@ io.on('connection', async(socket) => {
         io.emit('connected_change', --connected);
     });
 
-    socket.on('send message', async(text) => {
+    socket.on('send message', async(text, question) => {
         const user = socket.session;
         if (!user) return;
 
         const chat = (await chatLog.create({
-            student_id: user.student_id,
+            msg_id: ++msg_id,
             student_name: user.student_name,
             text: xss(text),
+            question: question
         })).dataValues;
 
         chat.school_name = user.school_name.substring(0, 2);
         io.emit('receive message', chat);
+
     });
+});
 
-    socket.on('qna send message', async(text) => {
-        const qna_user = socket.session;
-        if (!qna_user) return;
+io.on('admin_connection', async(socket) => {
+    const token = socket.request._query['token'];
+    try {
+        socket.session = await verifyJWT(token, process.env.JWT_ADMIN_SALT);
+    } catch (e) {
+        // ignored
+    }
 
-        const qna_chat = (await chatLog.create({
-            student_id: user.student_id,
-            student_name: user.student_name,
-            text: xss(text),
-        })).dataValues;
+    socket.on('delete message', async(msgId) => {
+        const user = socket.session;
+        if (!user) return;
 
-        qna_chat.school_name = qna_user.school_name.substring(0, 2);
-        io.emit('qna receive message', qna_chat);
+        await chatLog.update({
+            delete_flag: true,
+            delete_time: Date.now()
+        }, { where: { msg_id: msgId } })
+
+        chat.school_name = user.school_name.substring(0, 2);
+        io.emit('delete receive message', msgId);
+
     });
 });
