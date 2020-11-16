@@ -144,8 +144,8 @@ io.on('admin_connection', async(socket) => {
         if (!user) return;
 
         await chatLog.update({
-            delete_flag: true,
-            delete_time: Date.now()
+            deleted_flag: true,
+            deleted_time: Date.now()
         }, { where: { msg_id: msgId } })
 
         chat.school_name = user.school_name.substring(0, 2);

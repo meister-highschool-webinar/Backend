@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
         text: {
             type: DataTypes.TEXT
         },
-        create_time: {
+        deleted_time: {
             type: DataTypes.DATE,
             default: sequelize.literal('CURRENT_TIMESTAMP')
         },
@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
             type: DataTypes.BOOLEAN,
             default: false
         },
-        delete_flag: {
+        deleted_flag: {
             type: DataTypes.BOOLEAN,
             default: false
         }
