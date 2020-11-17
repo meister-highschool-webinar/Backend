@@ -16,16 +16,10 @@ module.exports = (sequelize) => (
         email: {
             type: DataTypes.STRING
         },
-        pw_hash: {
-            type: DataTypes.STRING
-        },
         grade: {
             type: DataTypes.INTEGER
         },
         class: {
-            type: DataTypes.INTEGER
-        },
-        lucky_flag: {
             type: DataTypes.INTEGER
         },
         login_flag: {
@@ -33,15 +27,6 @@ module.exports = (sequelize) => (
         },
         number: {
             type: DataTypes.INTEGER
-        },
-        access_token: {
-            type: DataTypes.STRING
-        },
-        refresh_token: {
-            type: DataTypes.STRING
-        },
-        token_create_time: {
-            type: DataTypes.DATE
         }
     })
 )

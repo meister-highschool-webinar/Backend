@@ -2,6 +2,15 @@ let swaggerUi = require('swagger-ui-express');
 let swaggerJSDoc = require('swagger-jsdoc');
 let router = require('express').Router();
 
+const ui_options = {
+    validatorUrl: null,
+    oauth: {
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        appName: "webinar"
+    }
+};
+
 const swaggerDefinition = {
     info: {
         title: 'Webinar API',
@@ -20,7 +29,7 @@ const options = {
 
 const specs = swaggerJSDoc(options);
 
-router.use('/', swaggerUi.serve);
-router.get('/', swaggerUi.setup(specs))
+router.use('/', swaggerUi.serve, swaggerUi.setup(specs, false, ui_options));
+// router.get('/', swaggerUi.setup(specs))
 
 module.exports = router;

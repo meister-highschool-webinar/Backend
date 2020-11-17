@@ -9,7 +9,6 @@ const { user } = require('../models');
 
 const getPassportSession = (req) => {
     const result = req.user;
-    console.log(result)
     return result;
 };
 
@@ -26,29 +25,41 @@ exports.googleLogin = async function(
             where: {
                 email: user_email
             },
-            attributes: ['student_name', 'id', 'email', 'school_name', "number", "grade", "class"]
+            attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
         });
         if (!userInfo) {
-            return cb(undefined, { user_email })
+            await user.create({
+                email: user_email,
+                student_name: "",
+                school_name: "",
+                class: 0,
+                grade: 0,
+                number: 0
+            }).then(result => {
+                return cb(undefined, { user_email })
+            }).catch(err => {
+                res.status(500).send({
+                    message: "구글 로그인을 하지 못하였습니다"
+                })
+            });
+            const {
+                studentName: student_name,
+                email,
+                schoolName: school_name,
+                class: _class,
+                grade,
+                number,
+            } = userInfo;
+            return cb(undefined, {
+                studentName,
+                id,
+                schoolName,
+                email,
+                grade,
+                number,
+                class: _class
+            });
         }
-        const {
-            studentName: student_name,
-            id,
-            email,
-            schoolName: school_name,
-            class: _class,
-            grade,
-            number,
-        } = userInfo;
-        return cb(undefined, {
-            studentName,
-            id,
-            schoolName,
-            email,
-            grade,
-            number,
-            class: _class
-        });
     } catch (error) {
         return cb(undefined, {});
     }
@@ -62,7 +73,6 @@ exports.getSessionInfo = async(req, res) => {
 exports.verifyOauthLogin = async function(req, res) {
     try {
         const session = getPassportSession(req);
-        console.log(session)
         if (session) {
             if (session['studentName']) {
                 res.redirect(`${process.env.CLIENT_DOMAIN}?studentName=${session['studentName']}`);
