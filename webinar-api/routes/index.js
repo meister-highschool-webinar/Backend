@@ -7,6 +7,7 @@ const auth = require('./auth');
 const { getTimetable } = require("../controllers/timetable.controller");
 const { googleLogin } = require("../controllers/login.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
+const { getUsertable } = require("../controllers/user.controller");
 const { qna } = require("../controllers/survey.controllers");
 const { getWinnerList } = require('../controllers/luckdraw.controller');
 const { userAuth } = require('../middlewares/auth.middle');
@@ -105,6 +106,33 @@ router.get('/timetable-list', userAuth, getTimetable);
  */
 router.get('/webinar-info', userAuth, getWebinar);
 
+
+/**
+ * @swagger
+ *  paths:
+ *    /webinar-info:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 정보 조회"
+ *        description: "웨비나 정보를 응답합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/access-token"
+ *        responses:
+ *          200:
+ *            description: "웨비나 정보"
+ *            schema:
+ *              $ref: "#/definitions/webinar-item"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+router.get('/webinar-info', userAuth, getUsertable);
 /**
  * @swagger
  *  paths:

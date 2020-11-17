@@ -12,8 +12,10 @@ exports.getWebinar = async(req, res) => {
                 ['id', 'DESC']
             ]
         });
-        if (webinar.length == 0) return res.status(400).send({
-            message: "데이터가 없습니다"
+        if (webinar.length == 0) return res.send({
+            title: "",
+            link: "",
+            detail: ""
         });
 
         res.send(webinar[0]);
