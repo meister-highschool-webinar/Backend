@@ -28,3 +28,29 @@ exports.getUsertable = async(req, res) => {
         res.sendStatus(500);
     }
 }
+
+exports.deleteUser = async(req, res) => {
+    try {
+        const param = Joi.object({
+            email: Joi.string().required(),
+        });
+        if (param.validate(req.body).error) {
+            res.status(400).send({
+                message: '입력값에 공란이 존재합니다.'
+            })
+        }
+
+        const {
+            email
+        } = req.body;
+        const users = await user.destroy({
+            where: { email }
+        }).then(result => {
+            res.status(200).send({
+                message: '유저 정보를 삭제하였습니다'
+            })
+        })
+    } catch (e) {
+        res.sendStatus(500);
+    }
+}

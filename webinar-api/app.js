@@ -50,18 +50,7 @@ passport.use(new GoogleStrategy({
     callbackURL: `${process.env.SERVER_DOMAIN}/auth/google/callback`,
 }, googleLogin));
 
-/**
- * @swagger
- * /auth/google:
- *    get:
- *      tags:
- *          - Login
- *      summary: google OAuth.
- *      description: redirect to google login
- *      responses:
- *        200:
- *          description: '{ statusCode: string, errorMessage: string }'
- */
+
 app.get(
     "/auth/google",
     passport.authenticate("google", {
