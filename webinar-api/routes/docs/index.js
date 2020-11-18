@@ -3,13 +3,17 @@ let swaggerJSDoc = require('swagger-jsdoc');
 let router = require('express').Router();
 
 const ui_options = {
-    validatorUrl: null,
+    // validatorUrl: null,
     oauth: {
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        appName: "webinar"
-    }
+        appName: "webinar",
+        scopes: 'profile email',
+    }, // ui.initOAuth
+    // authAction: {
+    // }, // ui.authActions.authorize
 };
+
 
 const swaggerDefinition = {
     info: {
@@ -17,9 +21,27 @@ const swaggerDefinition = {
         version: '1.0.0',
         description: '마이스터고 웨비나의 개발에 사용될 API입니다.'
     },
-
-
-    basePath: '/'
+    basePath: '/',
+    openapi: '3.0.1',  // XXX: Bug from swagger-jsdoc @ https://github.com/Surnet/swagger-jsdoc/issues/141#issuecomment-456849354
+    components: {
+        securitySchemes: {
+            google: {
+                type: 'oauth2',
+                flows: {
+                    implict: {
+                        authorizationUrl: "/auth/google",
+                        scopes: {
+                            profile: "profile",
+                            email: "email",
+                        }
+                    }
+                }
+            }
+        }
+    },
+    // security: [{
+    //     google: []
+    // }]
 }
 
 const options = {
@@ -30,6 +52,5 @@ const options = {
 const specs = swaggerJSDoc(options);
 
 router.use('/', swaggerUi.serve, swaggerUi.setup(specs, false, ui_options));
-// router.get('/', swaggerUi.setup(specs))
 
 module.exports = router;

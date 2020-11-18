@@ -215,8 +215,6 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *  paths:
  *    /api/auth/admin-login:
  *      post:
- *        security:
- *        -
  *        tags:
  *        - "Auth"
  *        summary: "관리자 로그인"
@@ -348,7 +346,7 @@ router.get('/file-download', adminAuth, exportToFile);
  *    /api/auth/signup:
  *      post:
  *        security:
- *        -
+ *        - google: [profile, email]
  *        tags:
  *        - "Auth"
  *        summary: "Signup"
