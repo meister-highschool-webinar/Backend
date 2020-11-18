@@ -19,6 +19,10 @@ const getSession = (req) => {
 
 exports.googleLogin = async function(
     accessToken, refreshToken, profile, cb) {
+    // XXX: HACK: DEBUGGING PURPOSE (without mysql db)
+    console.log({accessToken, refreshToken, profile})
+    return cb(undefined, { user_email: profile.emails[0].value})
+    // XXX: END OF HACK
     try {
         const user_email = profile.emails[0].value;
         const userInfo = await user.findOne({
@@ -73,6 +77,7 @@ exports.getSessionInfo = async(req, res) => {
 exports.verifyOauthLogin = async function(req, res) {
     try {
         const session = getPassportSession(req);
+        console.log({session})
         if (session) {
             if (session['studentName']) {
                 res.redirect(`${process.env.CLIENT_DOMAIN}?studentName=${session['studentName']}`);
