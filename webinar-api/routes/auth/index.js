@@ -347,32 +347,55 @@ router.get('/file-download', adminAuth, exportToFile);
  *  paths:
  *    /api/auth/signup:
  *      post:
- *        security:
- *        -
  *        tags:
  *        - "Auth"
  *        summary: "Signup"
- *        description: ""
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - in: "body"
- *          name: "body"
- *          description: "로그인을 위해 이메일과 비밀번호 전달"
+ *        requestBody:
+ *          description: 로그인을 위해 이메일과 비밀번호 전달
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/signup_request'
  *          required: true
- *          schema:
- *            $ref: "#/definitions/signup_request"
  *        responses:
  *          200:
- *            description: "로그인 결과"
- *            schema:
- *              $ref: "#/definitions/auth_response"
+ *            description: 로그인 결과
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/signup_request'
  *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_success"
+ *            description: 잘못된 데이터
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/signup_request'
+ *          security:
+ *          - google:
+ *              - profile
+ *              - email
+ *          x-codegen-request-body-name: body
+ * components:
+ *   schemas:
+ *      signup_request:
+ *       type: object
+ *       properties:
+ *         school_name:
+ *           type: string
+ *           description: 학교명
+ *         grade:
+ *           type: integer
+ *           description: 학년
+ *         class:
+ *           type: integer
+ *           description: 반
+ *         number:
+ *           type: integer
+ *           description: 번호
+ *         student_name:
+ *           type: string
+ *           description: 학생명
+ *         lucky_flag:
+ *           type: integer
+ *           description: 당첨 이벤트 번호
  */
 router.post('/signup', signup);
 

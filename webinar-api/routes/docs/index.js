@@ -19,7 +19,24 @@ const swaggerDefinition = {
     },
 
 
-    basePath: '/'
+    basePath: '/',
+    openapi: '3.0.1', // XXX: Bug from swagger-jsdoc @ https://github.com/Surnet/swagger-jsdoc/issues/141#issuecomment-456849354
+    components: {
+        securitySchemes: {
+            google: {
+                type: 'oauth2',
+                flows: {
+                    implict: {
+                        authorizationUrl: "/auth/google",
+                        scopes: {
+                            profile: "profile",
+                            email: "email",
+                        }
+                    }
+                }
+            }
+        }
+    },
 }
 
 const options = {
