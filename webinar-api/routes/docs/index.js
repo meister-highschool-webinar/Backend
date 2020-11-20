@@ -9,9 +9,7 @@ const ui_options = {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         appName: "webinar",
         scopes: 'profile email',
-    }, // ui.initOAuth
-    // authAction: {
-    // }, // ui.authActions.authorize
+    }
 };
 
 
@@ -21,8 +19,10 @@ const swaggerDefinition = {
         version: '1.0.0',
         description: '마이스터고 웨비나의 개발에 사용될 API입니다.'
     },
+
+
     basePath: '/',
-    openapi: '3.0.1',  // XXX: Bug from swagger-jsdoc @ https://github.com/Surnet/swagger-jsdoc/issues/141#issuecomment-456849354
+    openapi: '3.0.1', // XXX: Bug from swagger-jsdoc @ https://github.com/Surnet/swagger-jsdoc/issues/141#issuecomment-456849354
     components: {
         securitySchemes: {
             google: {
@@ -39,9 +39,6 @@ const swaggerDefinition = {
             }
         }
     },
-    // security: [{
-    //     google: []
-    // }]
 }
 
 const options = {

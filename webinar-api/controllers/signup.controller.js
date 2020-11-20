@@ -11,7 +11,8 @@ const getPassportSession = (req) => {
 };
 exports.signup = async function(req, res) {
     const passportUser = getPassportSession(req);
-    const passportEmail = (passportUser) ? passportUser['email'] : undefined
+    const passportEmail = (passportUser) ? passportUser['user_email'] : undefined
+
     try {
         const param = Joi.object({
             schoolCode: Joi.string().required(),
@@ -52,7 +53,7 @@ exports.signup = async function(req, res) {
             },
             attributes: ['email']
         });
-        if (email_check != null) return res.status(400).send({
+        if (email_check == null) return res.status(400).send({
             message: "가입되어 있지 않습니다"
         });
         const result = await user.findOne({
@@ -89,7 +90,7 @@ exports.signup = async function(req, res) {
                 message: "회원가입을 성공하였습니다"
             })
         }).catch(err => {
-            res.status(500).send({
+            res.status(400).send({
                 message: "회원가입을 하지 못하였습니다"
             })
         });

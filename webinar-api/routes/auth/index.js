@@ -5,7 +5,7 @@ const { signup } = require("../../controllers/signup.controller")
 const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
-
+const { deleteUser, getUsertable } = require("../../controllers/user.controller");
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const luckdraw = require("./luckdraw");
@@ -210,37 +210,40 @@ router.use('/luckdraw', adminAuth, luckdraw);
  */
 
 
+
 /**
- * @swagger
+ * @openapi
  *  paths:
  *    /api/auth/admin-login:
  *      post:
  *        tags:
  *        - "Auth"
  *        summary: "관리자 로그인"
- *        description: "관리자 토큰을 사용해 로그인 합니다."
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - in: "body"
- *          name: "body"
- *          description: "관리자 토큰"
+ *        requestBody:
+ *          description: "관리자 토큰을 사용해 로그인 합니다."
+ *          content:
+ *            application/json:
+ *              schema:
+ *                description: 로그인 결과
+ *                type: object
+ *                properties:
+ *                  password:
+ *                    type: string
+ *                    format: uuid
  *          required: true
- *          schema:
- *            type: object
- *            properties:
- *              password:
- *                type: string
- *                format: uuid
  *        responses:
  *          200:
  *            description: "로그인 결과"
- *            schema:
- *              $ref: "#/definitions/admin_auth_response"
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  accessToken:
+ *                  type: string
+ *                  description: 발급된 access tokene'
  *          403:
  *            description: "잘못된 토큰"
+ *          x-codegen-request-body-name: body
  */
 router.post('/admin-login', adminLogin);
 
@@ -345,34 +348,131 @@ router.get('/file-download', adminAuth, exportToFile);
  *  paths:
  *    /api/auth/signup:
  *      post:
- *        security:
- *        - google: [profile, email]
  *        tags:
  *        - "Auth"
  *        summary: "Signup"
- *        description: ""
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - in: "body"
- *          name: "body"
- *          description: "로그인을 위해 이메일과 비밀번호 전달"
+ *        requestBody:
+ *          description: 로그인을 위해 이메일과 비밀번호 전달
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/signup_request'
  *          required: true
- *          schema:
- *            $ref: "#/definitions/signup_request"
  *        responses:
  *          200:
- *            description: "로그인 결과"
- *            schema:
- *              $ref: "#/definitions/auth_response"
+ *            description: 로그인 결과
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/signup_request'
  *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_success"
+ *            description: 잘못된 데이터
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/signup_request'
+ *          security:
+ *            - google:
+ *              - profile
+ *              - email
+ *          x-codegen-request-body-name: body
+ * components:
+ *   schemas:
+ *      signup_request:
+ *       type: object
+ *       properties:
+ *         schoolCode:
+ *           type: string
+ *           description: 학교 코드
+ *         grade:
+ *           type: integer
+ *           description: 학년
+ *         class:
+ *           type: integer
+ *           description: 반
+ *         number:
+ *           type: integer
+ *           description: 번호
+ *         studentName:
+ *           type: string
+ *           description: 학생명
+ *         email:
+ *           type: string
+ *           description: 이메일
  */
 router.post('/signup', signup);
 
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/users:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 유저 전체 조회"
+ *        description: "웨비나 유저 전체 조회합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        - in: "query"
+ *          name: "pageSize"
+ *          description: "가져올 페이지 사이즈"
+ *          schema:
+ *            type: int
+ *        - in: "query"
+ *          name: "pageNum"
+ *          description: "가져올 페이지 넘버"
+ *          schema:
+ *            type: int
+ *        responses:
+ *          200:
+ *            description: "웨비나 유저 전체 조회"
+ *            schema:
+ *              $ref: "#/definitions/webinar-item"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+router.get('/users', adminAuth, getUsertable);
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/user:
+ *      delete:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "유저 삭제"
+ *        description: "유저 삭제합니다"
+ *        parameters:
+ *          - $ref: "#/definitions/x-access-token"
+ *        requestBody:
+ *          description: "email을 사용하여 유저 삭제합니다"
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  email:
+ *                    type: string
+ *          required: true
+ *        responses:
+ *          200:
+ *            description: "이메일 삭제 여부"
+ *            schema:
+ *              $ref: "#/definitions/Response_success"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+router.delete('/user', adminAuth, deleteUser);
 
 module.exports = router;

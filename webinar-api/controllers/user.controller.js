@@ -7,7 +7,7 @@ exports.getUsertable = async(req, res) => {
             pageSize: Joi.number().integer().required(),
             pageNum: Joi.number().integer().required(),
         });
-        if (param.validate(req.body).error) {
+        if (param.validate(req.query).error) {
             res.status(400).send({
                 message: '입력값에 공란이 존재합니다.'
             })
@@ -16,14 +16,19 @@ exports.getUsertable = async(req, res) => {
         const {
             pageSize: page_size,
             pageNum: page_num,
-        } = req.body;
+        } = req.query;
         const offset = page_size * (page_num - 1);
-        const users = await user.findAll({
-            attributes: ['student_id', 'student_name', 'email', 'class', 'grade', 'number', 'school_name'],
-            offset: offset,
-            limit: page_size
+        const int_page_size = page_size * 1
+        const all_users = await user.findAll({
+            attributes: ['email']
         });
-        res.send({ userList: users });
+        const len = all_users.length
+        const users = await user.findAll({
+            attributes: ['id', 'student_name', 'email', 'class', 'grade', 'number', 'school_name'],
+            offset: offset,
+            limit: int_page_size
+        });
+        res.send({ userList: users, totalLength: len });
     } catch (e) {
         res.sendStatus(500);
     }
