@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
             primaryKey: true
         },
         msg_id: {
-            type: DataTypes.INTEGER
+            type: DataTypes.STRING(255)
         },
         student_name: {
             type: DataTypes.STRING(255)
