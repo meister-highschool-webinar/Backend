@@ -369,7 +369,7 @@ router.get('/file-download', adminAuth, exportToFile);
  *              schema:
  *                $ref: '#/components/schemas/signup_request'
  *          security:
- *          - google:
+ *            - google:
  *              - profile
  *              - email
  *          x-codegen-request-body-name: body
@@ -378,9 +378,9 @@ router.get('/file-download', adminAuth, exportToFile);
  *      signup_request:
  *       type: object
  *       properties:
- *         school_name:
+ *         schoolCode:
  *           type: string
- *           description: 학교명
+ *           description: 학교 코드
  *         grade:
  *           type: integer
  *           description: 학년
@@ -390,12 +390,12 @@ router.get('/file-download', adminAuth, exportToFile);
  *         number:
  *           type: integer
  *           description: 번호
- *         student_name:
+ *         studentName:
  *           type: string
  *           description: 학생명
- *         lucky_flag:
- *           type: integer
- *           description: 당첨 이벤트 번호
+ *         email:
+ *           type: string
+ *           description: 이메일
  */
 router.post('/signup', signup);
 

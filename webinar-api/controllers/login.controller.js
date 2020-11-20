@@ -42,25 +42,12 @@ exports.googleLogin = async function(
                     message: "구글 로그인을 하지 못하였습니다"
                 })
             });
-            const {
-                studentName: student_name,
-                email,
-                schoolName: school_name,
-                class: _class,
-                grade,
-                number,
-            } = userInfo;
-            return cb(undefined, {
-                studentName,
-                id,
-                schoolName,
-                email,
-                grade,
-                number,
-                class: _class
-            });
+
         }
+        console.log(userInfo, "user")
+        return cb(undefined, { user_email })
     } catch (error) {
+        console.log(error)
         return cb(undefined, {});
     }
 }
@@ -73,11 +60,12 @@ exports.getSessionInfo = async(req, res) => {
 exports.verifyOauthLogin = async function(req, res) {
     try {
         const session = getPassportSession(req);
+        console.log(session, 1)
         if (session) {
             if (session['studentName']) {
                 res.redirect(`${process.env.CLIENT_DOMAIN}?studentName=${session['studentName']}`);
             } else {
-                res.redirect(`${process.env.CLIENT_DOMAIN}/signUp`);
+                res.redirect(`${process.env.SERVER_DOMAIN}/api/docs`);
             }
             return;
         }

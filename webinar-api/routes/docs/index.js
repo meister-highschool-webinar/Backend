@@ -7,7 +7,8 @@ const ui_options = {
     oauth: {
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        appName: "webinar"
+        appName: "webinar",
+        scopes: 'profile email',
     }
 };
 
