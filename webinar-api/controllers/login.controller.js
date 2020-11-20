@@ -46,7 +46,7 @@ exports.googleLogin = async function(
             });
 
         }
-        if (!userInfo.number) {
+        if (!userInfo.dataValues.school_name) {
             return cb(undefined, { user_email })
         }
         return cb(undefined, { user_email, isLogin: true })
