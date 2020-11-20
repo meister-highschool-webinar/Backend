@@ -23,7 +23,7 @@ exports.signup = async function(req, res) {
             studentName: Joi.string().required()
         });
         if (param.validate(req.body).error) {
-            res.status(400).send({
+            return res.status(400).send({
                 message: '공란이 존재합니다.'
             })
         }

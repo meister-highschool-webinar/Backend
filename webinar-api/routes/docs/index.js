@@ -3,7 +3,7 @@ let swaggerJSDoc = require('swagger-jsdoc');
 let router = require('express').Router();
 
 const ui_options = {
-    validatorUrl: null,
+    // validatorUrl: null,
     oauth: {
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -11,6 +11,7 @@ const ui_options = {
         scopes: 'profile email',
     }
 };
+
 
 const swaggerDefinition = {
     info: {
@@ -48,6 +49,5 @@ const options = {
 const specs = swaggerJSDoc(options);
 
 router.use('/', swaggerUi.serve, swaggerUi.setup(specs, false, ui_options));
-// router.get('/', swaggerUi.setup(specs))
 
 module.exports = router;

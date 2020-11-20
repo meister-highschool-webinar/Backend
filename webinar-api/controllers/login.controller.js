@@ -19,6 +19,8 @@ const getSession = (req) => {
 
 exports.googleLogin = async function(
     accessToken, refreshToken, profile, cb) {
+    // XXX: HACK: DEBUGGING PURPOSE (without mysql db)
+    // XXX: END OF HACK
     try {
         const user_email = profile.emails[0].value;
         const userInfo = await user.findOne({
@@ -49,7 +51,6 @@ exports.googleLogin = async function(
         }
         return cb(undefined, { user_email, isLogin: true })
     } catch (error) {
-        console.log(error)
         return cb(undefined, {});
     }
 }
