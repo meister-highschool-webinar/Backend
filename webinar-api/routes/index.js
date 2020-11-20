@@ -7,10 +7,10 @@ const auth = require('./auth');
 const { getTimetable } = require("../controllers/timetable.controller");
 const { googleLogin } = require("../controllers/login.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
-const { deleteUser, getUsertable } = require("../controllers/user.controller");
+
 const { qna } = require("../controllers/survey.controllers");
 const { getWinnerList } = require('../controllers/luckdraw.controller');
-const { userAuth } = require('../middlewares/auth.middle');
+const { authenticateUser } = require('../middlewares/auth.middle');
 const router = Router();
 
 
@@ -61,8 +61,6 @@ const router = Router();
  *        description: "웨비나 시간표 목록을 가져옵니다."
  *        produces:
  *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
  *        responses:
  *          200:
  *            description: "시간표"
@@ -77,7 +75,7 @@ const router = Router();
  */
 router.use('/auth', auth);
 router.use('/docs', docs);
-router.get('/timetable-list', userAuth, getTimetable);
+router.get('/timetable-list', authenticateUser, getTimetable);
 
 /**
  * @swagger
@@ -90,8 +88,6 @@ router.get('/timetable-list', userAuth, getTimetable);
  *        description: "웨비나 정보를 응답합니다."
  *        produces:
  *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
  *        responses:
  *          200:
  *            description: "웨비나 정보"
@@ -104,65 +100,9 @@ router.get('/timetable-list', userAuth, getTimetable);
  *          500:
  *            description: "DB 연결 에러"
  */
-router.get('/webinar-info', userAuth, getWebinar);
+router.get('/webinar-info', authenticateUser, getWebinar);
 
-
-
-/**
- * @swagger
- *  paths:
- *    /webinar-info:
- *      get:
- *        tags:
- *        - "Webinar"
- *        summary: "웨비나 정보 조회"
- *        description: "웨비나 정보를 응답합니다."
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
- *        responses:
- *          200:
- *            description: "웨비나 정보"
- *            schema:
- *              $ref: "#/definitions/webinar-item"
- *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_error"
- *          500:
- *            description: "DB 연결 에러"
- */
-router.get('/webinar-info', userAuth, getUsertable);
-
-
-/**
- * @swagger
- *  paths:
- *    /webinar-info:
- *      get:
- *        tags:
- *        - "Webinar"
- *        summary: "웨비나 정보 조회"
- *        description: "웨비나 정보를 응답합니다."
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
- *        responses:
- *          200:
- *            description: "웨비나 정보"
- *            schema:
- *              $ref: "#/definitions/webinar-item"
- *          400:
- *            description: "잘못된 데이터"
- *            schema:
- *              $ref: "#/definitions/Response_error"
- *          500:
- *            description: "DB 연결 에러"
- */
-router.post('/webinar-info', userAuth, deleteUser);
-/**
+/** 
  * @swagger
  *  paths:
  *    /api/qna:
@@ -173,8 +113,6 @@ router.post('/webinar-info', userAuth, deleteUser);
  *        description: "설문 결과를 조회합니다."
  *        produces:
  *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
  *        responses:
  *          200:
  *            description: "시간표"
@@ -184,7 +122,7 @@ router.post('/webinar-info', userAuth, deleteUser);
  *            description: "DB 연결 에러"
  */
 
-router.get('/qna', userAuth, qna);
+router.get('/qna', authenticateUser, qna);
 
 /**
  * @swagger
@@ -197,8 +135,6 @@ router.get('/qna', userAuth, qna);
  *        description: "럭키드로우 전체 결과를 조회합니다."
  *        produces:
  *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/access-token"
  *        responses:
  *          200:
  *            description: "결과"
@@ -208,7 +144,7 @@ router.get('/qna', userAuth, qna);
  *            description: "DB 연결 에러"
  */
 
-router.get('/winner', userAuth, getWinnerList);
+router.get('/winner', authenticateUser, getWinnerList);
 
 
 module.exports = router;

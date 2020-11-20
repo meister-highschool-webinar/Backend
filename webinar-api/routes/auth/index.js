@@ -5,7 +5,7 @@ const { signup } = require("../../controllers/signup.controller")
 const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
-
+const { deleteUser, getUsertable } = require("../../controllers/user.controller");
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const luckdraw = require("./luckdraw");
@@ -17,193 +17,198 @@ router.use('/luckdraw', adminAuth, luckdraw);
 
 
 /**
- * @openapi
+ * @swagger
  * tags:
  *   name: Auth
  *   description: 로그인 처리
- * components:
- *   schemas:
- *     qna_response:
- *       type: object
- *       properties:
- *         qna:
- *           type: object
- *           description: 설문 조사 결과 리스트
- *           properties:
- *             school:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *             grade:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *             major:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *             info:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *             language:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *             field:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *             company:
- *               type: array
- *               items:
- *                 $ref: '#/components/qna_item'
- *       qna_item:
+ * definitions:
+ *   qna_response:
+ *     type: object
+ *     require:
+ *       - qna
+ *     properties:
+ *       qna:
  *         type: object
+ *         description: 설문 조사 결과 리스트
  *         properties:
- *           name:
- *             type: string
- *             description: 요소 이름
- *           count:
- *             type: integer
- *             description: 요소 개수
- *       auth:
- *         type: string
- *         require:
- *           - x-access-token
- *         properties:
- *           x-access-token:
- *             type: string
- *             description: access token
- *       timetable_input_request:
- *         type: object
- *         require:
- *           - tableList
- *         properties:
- *           tableList:
+ *           school:
  *             type: array
- *             description: 시간표 리스트
- *           items: 
- *             $ref: '#/components/timetable_item'
- *       timetable_input_response:
- *         type: object
- *         require:
- *           - msg
- *           - msgId
- *         properties:
- *           msg:
- *             type: string
- *             description: "처리 메시지"
- *           msgId:
- *             type: number
- *             description: "처리 id"
- *       signup_request:
- *         type: object
- *         required:
- *           - schoolCode
- *           - grade
- *           - class
- *           - number
- *           - email
- *           - studentName
- *         properties:
- *           schoolCode:
- *             type: string
- *             description: 학교 코드
- *           studentName:
- *             type: string
- *             description: 학생 이름
+ *             items:
+ *               $ref: '#/definitions/qna_item'
  *           grade:
- *             type: integer
- *             description: 학년
- *           class:
- *             type: integer
- *             description: 반
- *           number:
- *             type: integer
- *             description: 번호
- *           email:
- *             type: string
- *             description: 이메일
- *       auth_request:
- *         type: object
- *         required:
- *           - email
- *           - password
- *         properties:
- *           email:
- *             type: string
- *             description: 이메일
- *           password:
- *             type: string
- *             description: 비밀번호
- *       me_request:
- *         type: object
- *         required:
- *           - email
- *         properties:
- *           email:
- *             type: string
- *             description: 이메일
- *       auth_response:
- *         type: object
- *         required:
- *           - accessToken
- *           - userId
- *           - refreshToken
- *           - studentName
- *         properties:
- *           accessToken:
- *             type: string
- *             description: 발급된 access token
- *         refreshToken:
- *           type: string
- *           description: 발급된 refresh token
- *         userId:
- *           type: integer
- *           description: 유저 id
- *         studentName:
- *           type: string
- *           description: 학생 이름
- *       refresh_response:
- *         type: object
- *         required:
- *           - accessToken
- *           - userId
- *           - studentName
- *         properties:
- *           accessToken:
- *             type: string
- *             description: 발급된 access token
- *           userId:
- *             type: integer
- *             description: 유저 id
- *           studentName:
- *             type: string
- *             description: 학생 이름
- *       Response_success:
- *         type: object
- *         required:
- *           - status
- *         properties:
- *           message:
- *             type: string
- *             description: 성공
- *       Response_error:
- *         type: object
- *         required:
- *           - status
- *         properties:
- *           message:
- *             type: string
- *             description: 오류 사유
- *       admin_auth_response:
- *         type: object
- *         properties:
- *           accessToken:
- *             type: string
- *             description: 발급된 access token
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           major:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           info:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           language:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           field:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *           company:
+ *             type: array
+ *             items:
+ *               $ref: '#/definitions/qna_item'
+ *   qna_item:
+ *     type: object
+ *     require:
+ *       - name
+ *       - count
+ *     properties:
+ *       name:
+ *         type: string
+ *         description: 요소 이름
+ *       count:
+ *         type: integer
+ *         description: 요소 개수
+ *   auth:
+ *     type: string
+ *     require:
+ *       - x-access-token
+ *     properties:
+ *       x-access-token:
+ *         type: string
+ *         description: access token
+ *   timetable_input_request:
+ *     type: object
+ *     require:
+ *       - tableList
+ *     properties:
+ *       tableList:
+ *         type: array
+ *         description: 시간표 리스트
+ *         items: 
+ *           $ref: '#/definitions/timetable_item'
+ *   timetable_input_response:
+ *     type: object
+ *     require:
+ *       - msg
+ *       - msgId
+ *     properties:
+ *       msg:
+ *         type: string
+ *         description: "처리 메시지"
+ *       msgId:
+ *         type: number
+ *         description: "처리 id"
+ *   signup_request:
+ *     type: object
+ *     required:
+ *       - schoolCode
+ *       - grade
+ *       - class
+ *       - number
+ *       - email
+ *       - studentName
+ *     properties:
+ *       schoolCode:
+ *         type: string
+ *         description: 학교 코드
+ *       studentName:
+ *         type: string
+ *         description: 학생 이름
+ *       grade:
+ *         type: integer
+ *         description: 학년
+ *       class:
+ *         type: integer
+ *         description: 반
+ *       number:
+ *         type: integer
+ *         description: 번호
+ *       email:
+ *         type: string
+ *         description: 이메일
+ *   auth_request:
+ *     type: object
+ *     required:
+ *       - email
+ *       - password
+ *     properties:
+ *       email:
+ *         type: string
+ *         description: 이메일
+ *       password:
+ *         type: string
+ *         description: 비밀번호
+ *   me_request:
+ *     type: object
+ *     required:
+ *       - email
+ *     properties:
+ *       email:
+ *         type: string
+ *         description: 이메일
+ *   auth_response:
+ *     type: object
+ *     required:
+ *       - accessToken
+ *       - userId
+ *       - refreshToken
+ *       - studentName
+ *     properties:
+ *       accessToken:
+ *         type: string
+ *         description: 발급된 access token
+ *       refreshToken:
+ *         type: string
+ *         description: 발급된 refresh token
+ *       userId:
+ *         type: integer
+ *         description: 유저 id
+ *       studentName:
+ *         type: string
+ *         description: 학생 이름
+ *   refresh_response:
+ *     type: object
+ *     required:
+ *       - accessToken
+ *       - userId
+ *       - studentName
+ *     properties:
+ *       accessToken:
+ *         type: string
+ *         description: 발급된 access token
+ *       userId:
+ *         type: integer
+ *         description: 유저 id
+ *       studentName:
+ *         type: string
+ *         description: 학생 이름
+ *   Response_success:
+ *     type: object
+ *     required:
+ *       - status
+ *     properties:
+ *       message:
+ *         type: string
+ *         description: 성공
+ *   Response_error:
+ *     type: object
+ *     required:
+ *       - status
+ *     properties:
+ *       message:
+ *         type: string
+ *         description: 오류 사유
+ *   admin_auth_response:
+ *     type: object
+ *     properties:
+ *       accessToken:
+ *         type: string
+ *         description: 발급된 access token
  */
+
 
 
 /**
@@ -254,17 +259,17 @@ router.post('/admin-login', adminLogin);
  *        produces:
  *        - "application/json"
  *        parameters:
- *        - $ref: "#/components/x-access-token"
+ *        - $ref: "#/definitions/x-access-token"
  *        - name: body
  *          in: body
  *          description: 웨비나 정보
  *          schema:
- *              $ref: "#/components/webinar-item"
+ *              $ref: "#/definitions/webinar-item"
  *        responses:
  *          201:
  *            description: "웨비나 정보"
  *            schema:
- *              $ref: "#/components/webinar-item"
+ *              $ref: "#/definitions/webinar-item"
  *          400:
  *            description: "입력 정보에 오류가 있을 때"
  *          500:
@@ -284,26 +289,26 @@ router.post('/webinar', adminAuth, newWebinar);
  *        produces:
  *        - "application/json"
  *        parameters:
- *        - $ref: "#/components/x-access-token"
+ *        - $ref: "#/definitions/x-access-token"
  *        - in: "body"
  *          name: "body"
  *          description: "타임 테이블 입력을 위한 정보를 받습니다."
  *          required: true
  *          schema:
- *            $ref: "#/components/timetable_input_request" 
+ *            $ref: "#/definitions/timetable_input_request" 
  *        responses:
  *          200:
  *            description: "입력 성공"
  *            schema:
- *              $ref: "#/components/timetable_input_response"
+ *              $ref: "#/definitions/timetable_input_response"
  *          400:
  *            description: "입력 실패"
  *            schema:
- *              $ref: "#/components/timetable_input_response"
+ *              $ref: "#/definitions/timetable_input_response"
  *          401:
  *            description: "인증 에러"
  *            schema:
- *              $ref: "#/components/timetable_input_response"
+ *              $ref: "#/definitions/timetable_input_response"
  *          500:
  *            description: "서버 에러"
  */
@@ -321,7 +326,7 @@ router.post('/timetable', adminAuth, inputTimetable);
  *        produces:
  *        - "text/csv"
  *        parameters:
- *        - $ref: "#/components/x-access-token"
+ *        - $ref: "#/definitions/x-access-token"
  *        - in: "query"
  *          name: "dataName"
  *          description: "가져올 데이터 종류"
@@ -395,5 +400,79 @@ router.get('/file-download', adminAuth, exportToFile);
  */
 router.post('/signup', signup);
 
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/users:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 유저 전체 조회"
+ *        description: "웨비나 유저 전체 조회합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        - in: "query"
+ *          name: "pageSize"
+ *          description: "가져올 페이지 사이즈"
+ *          schema:
+ *            type: int
+ *        - in: "query"
+ *          name: "pageNum"
+ *          description: "가져올 페이지 넘버"
+ *          schema:
+ *            type: int
+ *        responses:
+ *          200:
+ *            description: "웨비나 유저 전체 조회"
+ *            schema:
+ *              $ref: "#/definitions/webinar-item"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+router.get('/users', adminAuth, getUsertable);
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/user:
+ *      delete:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "유저 삭제"
+ *        description: "유저 삭제합니다"
+ *        parameters:
+ *          - $ref: "#/definitions/x-access-token"
+ *        requestBody:
+ *          description: "email을 사용하여 유저 삭제합니다"
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  email:
+ *                    type: string
+ *          required: true
+ *        responses:
+ *          200:
+ *            description: "이메일 삭제 여부"
+ *            schema:
+ *              $ref: "#/definitions/Response_success"
+ *          400:
+ *            description: "잘못된 데이터"
+ *            schema:
+ *              $ref: "#/definitions/Response_error"
+ *          500:
+ *            description: "DB 연결 에러"
+ */
+router.delete('/user', adminAuth, deleteUser);
 
 module.exports = router;
