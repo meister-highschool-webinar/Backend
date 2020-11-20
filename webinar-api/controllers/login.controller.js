@@ -36,16 +36,18 @@ exports.googleLogin = async function(
                 grade: 0,
                 number: 0
             }).then(result => {
-                return cb(undefined, { user_email })
+                return cb(undefined, { user_email, requireSign: true })
             }).catch(err => {
-                res.status(500).send({
+                res.status(400).send({
                     message: "구글 로그인을 하지 못하였습니다"
                 })
             });
 
         }
-        console.log(userInfo, "user")
-        return cb(undefined, { user_email })
+        if (!userInfo.number) {
+            return cb(undefined, { user_email })
+        }
+        return cb(undefined, { user_email, isLogin: true })
     } catch (error) {
         console.log(error)
         return cb(undefined, {});
@@ -60,20 +62,20 @@ exports.getSessionInfo = async(req, res) => {
 exports.verifyOauthLogin = async function(req, res) {
     try {
         const session = getPassportSession(req);
-        console.log(session, 1)
         if (session) {
-            if (session['studentName']) {
-                res.redirect(`${process.env.CLIENT_DOMAIN}?studentName=${session['studentName']}`);
+            // 회원가입 필요 없음
+            if (session['isLogin']) {
+                res.redirect(`${process.env.CLIENT_DOMAIN}`);
             } else {
-                res.redirect(`${process.env.SERVER_DOMAIN}/api/docs`);
+                res.redirect(`${process.env.CLIENT_DOMAIN}/signup`);
             }
             return;
         }
-        res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
+        res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
 
 
     } catch (error) {
-        res.redirect(`${process.env.CLIENT_DOMAIN}?statusCode=401`);
+        res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
     }
 }
 

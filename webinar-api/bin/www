@@ -102,12 +102,8 @@ const { chatLog } = require("../models");
 let connected = 0;
 let msg_id = 0;
 io.on('connection', async(socket) => {
-    const token = socket.request._query['token'];
-    try {
-        socket.session = await verifyJWT(token, process.env.JWT_SALT);
-    } catch (e) {
-        // ignored
-    }
+    console.log(socket.session)
+    console.log(socket.request.session, "22")
     io.emit('connected_change', ++connected);
 
     socket.on('disconnect', _ => {

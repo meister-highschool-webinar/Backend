@@ -90,7 +90,7 @@ exports.signup = async function(req, res) {
                 message: "회원가입을 성공하였습니다"
             })
         }).catch(err => {
-            res.status(500).send({
+            res.status(400).send({
                 message: "회원가입을 하지 못하였습니다"
             })
         });
