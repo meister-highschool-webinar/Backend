@@ -84,6 +84,14 @@ function onError(error) {
     }
 }
 
+function createRandomString(length = 10) {
+    let text = ''
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    Array(length).forEach(() => {
+        text += possible.charAt(Math.floor(Math.random() * possible.length))
+    })
+    return text
+}
 /**
  * Event listener for HTTP server "listening" event.
  */
@@ -100,28 +108,27 @@ const { verifyJWT } = require("../middlewares/auth.middle");
 const { chatLog } = require("../models");
 
 let connected = 0;
-let msg_id = 0;
 io.on('connection', async(socket) => {
-    console.log(socket.session)
-    console.log(socket.request.session, "22")
+    if (!socket.request.isAuthenticated())
+        return;
     io.emit('connected_change', ++connected);
 
     socket.on('disconnect', _ => {
         io.emit('connected_change', --connected);
     });
 
-    socket.on('send message', async(text, question) => {
+    socket.on('send message', async(student_name, school_name, text, question) => {
         const user = socket.session;
         if (!user) return;
 
         const chat = (await chatLog.create({
-            msg_id: ++msg_id,
-            student_name: user.student_name,
+            msg_id: createRandomString(),
+            student_name: student_name,
             text: xss(text),
             question: question
         })).dataValues;
 
-        chat.school_name = user.school_name.substring(0, 2);
+        chat.school_name = school_name.substring(0, 2);
         io.emit('receive message', chat);
 
     });
