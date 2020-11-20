@@ -21,192 +21,188 @@ router.use('/luckdraw', adminAuth, luckdraw);
  * tags:
  *   name: Auth
  *   description: 로그인 처리
- * definitions:
- *   qna_response:
- *     type: object
- *     require:
- *       - qna
- *     properties:
- *       qna:
+ * components:
+ *   schemas:
+ *     qna_response:
+ *       type: object
+ *       properties:
+ *         qna:
+ *           type: object
+ *           description: 설문 조사 결과 리스트
+ *           properties:
+ *             school:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *             grade:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *             major:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *             info:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *             language:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *             field:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *             company:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/qna_item'
+ *       qna_item:
  *         type: object
- *         description: 설문 조사 결과 리스트
  *         properties:
- *           school:
+ *           name:
+ *             type: string
+ *             description: 요소 이름
+ *           count:
+ *             type: integer
+ *             description: 요소 개수
+ *       auth:
+ *         type: string
+ *         require:
+ *           - x-access-token
+ *         properties:
+ *           x-access-token:
+ *             type: string
+ *             description: access token
+ *       timetable_input_request:
+ *         type: object
+ *         require:
+ *           - tableList
+ *         properties:
+ *           tableList:
  *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
+ *             description: 시간표 리스트
+ *           items: 
+ *             $ref: '#/components/timetable_item'
+ *       timetable_input_response:
+ *         type: object
+ *         require:
+ *           - msg
+ *           - msgId
+ *         properties:
+ *           msg:
+ *             type: string
+ *             description: "처리 메시지"
+ *           msgId:
+ *             type: number
+ *             description: "처리 id"
+ *       signup_request:
+ *         type: object
+ *         required:
+ *           - schoolCode
+ *           - grade
+ *           - class
+ *           - number
+ *           - email
+ *           - studentName
+ *         properties:
+ *           schoolCode:
+ *             type: string
+ *             description: 학교 코드
+ *           studentName:
+ *             type: string
+ *             description: 학생 이름
  *           grade:
- *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
- *           major:
- *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
- *           info:
- *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
- *           language:
- *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
- *           field:
- *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
- *           company:
- *             type: array
- *             items:
- *               $ref: '#/definitions/qna_item'
- *   qna_item:
- *     type: object
- *     require:
- *       - name
- *       - count
- *     properties:
- *       name:
- *         type: string
- *         description: 요소 이름
- *       count:
- *         type: integer
- *         description: 요소 개수
- *   auth:
- *     type: string
- *     require:
- *       - x-access-token
- *     properties:
- *       x-access-token:
- *         type: string
- *         description: access token
- *   timetable_input_request:
- *     type: object
- *     require:
- *       - tableList
- *     properties:
- *       tableList:
- *         type: array
- *         description: 시간표 리스트
- *         items: 
- *           $ref: '#/definitions/timetable_item'
- *   timetable_input_response:
- *     type: object
- *     require:
- *       - msg
- *       - msgId
- *     properties:
- *       msg:
- *         type: string
- *         description: "처리 메시지"
- *       msgId:
- *         type: number
- *         description: "처리 id"
- *   signup_request:
- *     type: object
- *     required:
- *       - schoolCode
- *       - grade
- *       - class
- *       - number
- *       - email
- *       - studentName
- *     properties:
- *       schoolCode:
- *         type: string
- *         description: 학교 코드
- *       studentName:
- *         type: string
- *         description: 학생 이름
- *       grade:
- *         type: integer
- *         description: 학년
- *       class:
- *         type: integer
- *         description: 반
- *       number:
- *         type: integer
- *         description: 번호
- *       email:
- *         type: string
- *         description: 이메일
- *   auth_request:
- *     type: object
- *     required:
- *       - email
- *       - password
- *     properties:
- *       email:
- *         type: string
- *         description: 이메일
- *       password:
- *         type: string
- *         description: 비밀번호
- *   me_request:
- *     type: object
- *     required:
- *       - email
- *     properties:
- *       email:
- *         type: string
- *         description: 이메일
- *   auth_response:
- *     type: object
- *     required:
- *       - accessToken
- *       - userId
- *       - refreshToken
- *       - studentName
- *     properties:
- *       accessToken:
- *         type: string
- *         description: 발급된 access token
- *       refreshToken:
- *         type: string
- *         description: 발급된 refresh token
- *       userId:
- *         type: integer
- *         description: 유저 id
- *       studentName:
- *         type: string
- *         description: 학생 이름
- *   refresh_response:
- *     type: object
- *     required:
- *       - accessToken
- *       - userId
- *       - studentName
- *     properties:
- *       accessToken:
- *         type: string
- *         description: 발급된 access token
- *       userId:
- *         type: integer
- *         description: 유저 id
- *       studentName:
- *         type: string
- *         description: 학생 이름
- *   Response_success:
- *     type: object
- *     required:
- *       - status
- *     properties:
- *       message:
- *         type: string
- *         description: 성공
- *   Response_error:
- *     type: object
- *     required:
- *       - status
- *     properties:
- *       message:
- *         type: string
- *         description: 오류 사유
- *   admin_auth_response:
- *     type: object
- *     properties:
- *       accessToken:
- *         type: string
- *         description: 발급된 access token
+ *             type: integer
+ *             description: 학년
+ *           class:
+ *             type: integer
+ *             description: 반
+ *           number:
+ *             type: integer
+ *             description: 번호
+ *           email:
+ *             type: string
+ *             description: 이메일
+ *       auth_request:
+ *         type: object
+ *         required:
+ *           - email
+ *           - password
+ *         properties:
+ *           email:
+ *             type: string
+ *             description: 이메일
+ *           password:
+ *             type: string
+ *             description: 비밀번호
+ *       me_request:
+ *         type: object
+ *         required:
+ *           - email
+ *         properties:
+ *           email:
+ *             type: string
+ *             description: 이메일
+ *       auth_response:
+ *         type: object
+ *         required:
+ *           - accessToken
+ *           - userId
+ *           - refreshToken
+ *           - studentName
+ *         properties:
+ *           accessToken:
+ *             type: string
+ *             description: 발급된 access token
+ *         refreshToken:
+ *           type: string
+ *           description: 발급된 refresh token
+ *         userId:
+ *           type: integer
+ *           description: 유저 id
+ *         studentName:
+ *           type: string
+ *           description: 학생 이름
+ *       refresh_response:
+ *         type: object
+ *         required:
+ *           - accessToken
+ *           - userId
+ *           - studentName
+ *         properties:
+ *           accessToken:
+ *             type: string
+ *             description: 발급된 access token
+ *           userId:
+ *             type: integer
+ *             description: 유저 id
+ *           studentName:
+ *             type: string
+ *             description: 학생 이름
+ *       Response_success:
+ *         type: object
+ *         required:
+ *           - status
+ *         properties:
+ *           message:
+ *             type: string
+ *             description: 성공
+ *       Response_error:
+ *         type: object
+ *         required:
+ *           - status
+ *         properties:
+ *           message:
+ *             type: string
+ *             description: 오류 사유
+ *       admin_auth_response:
+ *         type: object
+ *         properties:
+ *           accessToken:
+ *             type: string
+ *             description: 발급된 access token
  */
 
 
@@ -215,34 +211,34 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *  paths:
  *    /api/auth/admin-login:
  *      post:
- *        security:
- *        -
  *        tags:
  *        - "Auth"
  *        summary: "관리자 로그인"
- *        description: "관리자 토큰을 사용해 로그인 합니다."
- *        consumes:
- *        - "application/json"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - in: "body"
- *          name: "body"
- *          description: "관리자 토큰"
+ *        requestBody:
+ *          description: "관리자 토큰을 사용해 로그인 합니다."
+ *          content:
+ *            application/json:
+ *              schema:
+ *                description: 로그인 결과
+ *                type: object
+ *                properties:
+ *                  password:
+ *                    type: string
+ *                    format: uuid
  *          required: true
- *          schema:
- *            type: object
- *            properties:
- *              password:
- *                type: string
- *                format: uuid
  *        responses:
  *          200:
  *            description: "로그인 결과"
- *            schema:
- *              $ref: "#/definitions/admin_auth_response"
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  accessToken:
+ *                  type: string
+ *                  description: 발급된 access token
  *          403:
  *            description: "잘못된 토큰"
+ *          x-codegen-request-body-name: body
  */
 router.post('/admin-login', adminLogin);
 
@@ -258,17 +254,17 @@ router.post('/admin-login', adminLogin);
  *        produces:
  *        - "application/json"
  *        parameters:
- *        - $ref: "#/definitions/x-access-token"
+ *        - $ref: "#/components/x-access-token"
  *        - name: body
  *          in: body
  *          description: 웨비나 정보
  *          schema:
- *              $ref: "#/definitions/webinar-item"
+ *              $ref: "#/components/webinar-item"
  *        responses:
  *          201:
  *            description: "웨비나 정보"
  *            schema:
- *              $ref: "#/definitions/webinar-item"
+ *              $ref: "#/components/webinar-item"
  *          400:
  *            description: "입력 정보에 오류가 있을 때"
  *          500:
@@ -288,26 +284,26 @@ router.post('/webinar', adminAuth, newWebinar);
  *        produces:
  *        - "application/json"
  *        parameters:
- *        - $ref: "#/definitions/x-access-token"
+ *        - $ref: "#/components/x-access-token"
  *        - in: "body"
  *          name: "body"
  *          description: "타임 테이블 입력을 위한 정보를 받습니다."
  *          required: true
  *          schema:
- *            $ref: "#/definitions/timetable_input_request" 
+ *            $ref: "#/components/timetable_input_request" 
  *        responses:
  *          200:
  *            description: "입력 성공"
  *            schema:
- *              $ref: "#/definitions/timetable_input_response"
+ *              $ref: "#/components/timetable_input_response"
  *          400:
  *            description: "입력 실패"
  *            schema:
- *              $ref: "#/definitions/timetable_input_response"
+ *              $ref: "#/components/timetable_input_response"
  *          401:
  *            description: "인증 에러"
  *            schema:
- *              $ref: "#/definitions/timetable_input_response"
+ *              $ref: "#/components/timetable_input_response"
  *          500:
  *            description: "서버 에러"
  */
@@ -325,7 +321,7 @@ router.post('/timetable', adminAuth, inputTimetable);
  *        produces:
  *        - "text/csv"
  *        parameters:
- *        - $ref: "#/definitions/x-access-token"
+ *        - $ref: "#/components/x-access-token"
  *        - in: "query"
  *          name: "dataName"
  *          description: "가져올 데이터 종류"
