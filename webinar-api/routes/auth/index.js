@@ -17,7 +17,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
 
 
 /**
- * @swagger
+ * @openapi
  * tags:
  *   name: Auth
  *   description: 로그인 처리
@@ -207,7 +207,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
 
 
 /**
- * @swagger
+ * @openapi
  *  paths:
  *    /api/auth/admin-login:
  *      post:
@@ -235,7 +235,7 @@ router.use('/luckdraw', adminAuth, luckdraw);
  *                properties:
  *                  accessToken:
  *                  type: string
- *                  description: 발급된 access token
+ *                  description: 발급된 access tokene'
  *          403:
  *            description: "잘못된 토큰"
  *          x-codegen-request-body-name: body
