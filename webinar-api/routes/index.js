@@ -75,7 +75,7 @@ const router = Router();
  */
 router.use('/auth', auth);
 router.use('/docs', docs);
-router.get('/timetable-list', authenticateUser, getTimetable);
+router.get('/timetable-list', getTimetable);
 
 /**
  * @swagger
@@ -100,7 +100,7 @@ router.get('/timetable-list', authenticateUser, getTimetable);
  *          500:
  *            description: "DB 연결 에러"
  */
-router.get('/webinar-info', authenticateUser, getWebinar);
+router.get('/webinar-info', getWebinar);
 
 /** 
  * @swagger
@@ -122,7 +122,7 @@ router.get('/webinar-info', authenticateUser, getWebinar);
  *            description: "DB 연결 에러"
  */
 
-router.get('/qna', authenticateUser, qna);
+router.get('/qna', qna);
 
 /**
  * @swagger
@@ -144,7 +144,7 @@ router.get('/qna', authenticateUser, qna);
  *            description: "DB 연결 에러"
  */
 
-router.get('/winner', authenticateUser, getWinnerList);
+router.get('/winner', getWinnerList);
 
 
 module.exports = router;
