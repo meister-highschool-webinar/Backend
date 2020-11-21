@@ -9,10 +9,14 @@ const getPassportSession = (req) => {
     console.log(result)
     return result;
 };
-exports.signup = async function(req, res) {
-    const passportUser = getPassportSession(req);
-    const passportEmail = (passportUser) ? passportUser['user_email'] : undefined
 
+const getSession = (req) => {
+    const result = (req.session) ? req.session : undefined;
+    return result;
+};
+exports.signup = async function(req, res) {
+    const passportUser = getSession(req).passport;
+    const passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
     try {
         const param = Joi.object({
             schoolCode: Joi.string().required(),
@@ -47,7 +51,7 @@ exports.signup = async function(req, res) {
             },
             attributes: ['code', "name"]
         });
-        if (!code.dataValues.name) return res.status(400).send({
+        if (!code) return res.status(400).send({
             message: "학교 코드가 잘못 되었습니다"
         });
         const email_check = await user.findOne({

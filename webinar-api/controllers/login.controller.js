@@ -9,6 +9,7 @@ const { user } = require('../models');
 
 const getPassportSession = (req) => {
     const result = req.user;
+    console.log(result)
     return result;
 };
 
@@ -26,7 +27,7 @@ exports.googleLogin = async function(
                 email: user_email
             },
             attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
-        })).dataValues;
+        }))
         if (!userInfo) {
             await user.create({
                 email: user_email,
@@ -47,8 +48,13 @@ exports.googleLogin = async function(
         if (!userInfo.school_name) {
             return cb(undefined, { user_email })
         }
-
-        return cb(undefined, { userInfo, isLogin: true })
+        const userInfo_res = (await user.findOne({
+            where: {
+                email: user_email
+            },
+            attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
+        })).dataValues;
+        return cb(undefined, { userInfo: userInfo_res, isLogin: true })
     } catch (error) {
         return cb(undefined, {});
     }
@@ -62,11 +68,12 @@ exports.getSessionInfo = async(req, res) => {
 exports.verifyOauthLogin = async function(req, res) {
     try {
         const session = getPassportSession(req);
+        console.log(session, "session")
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
                 res.redirect(`${process.env.CLIENT_DOMAIN}`);
-                console.log(session["userInfo"])
+                console.log(session["userInfo"], 111)
                 return res.status(200).send(session["userInfo"]);
             } else {
                 res.redirect(`${process.env.CLIENT_DOMAIN}/signup?email=${session['user_email']}`);
