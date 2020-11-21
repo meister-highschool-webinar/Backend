@@ -97,7 +97,16 @@ exports.signup = async function(req, res) {
             class: _class,
             number: number
         }, { where: { email: email } }).then(result => {
+            const user_info = {
+                student_name: student_name,
+                school_name: code.dataValues.name,
+                grade: grade,
+                class: _class,
+                number: number,
+                email: email
+            }
             res.status(200).send({
+                userInfo: user_info,
                 message: "회원가입을 성공하였습니다"
             })
         }).catch(err => {
