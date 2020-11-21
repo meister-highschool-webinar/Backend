@@ -16,9 +16,10 @@ const getSession = (req) => {
 };
 exports.signup = async function(req, res) {
     console.log(req, "signup")
+    let passportEmail;
     try {
         const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
-        const passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
+        passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
 
     } catch {
         return res.status(400).send({
