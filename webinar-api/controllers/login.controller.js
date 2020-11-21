@@ -64,7 +64,7 @@ exports.verifyOauthLogin = async function(req, res) {
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
-                res.redirect(`http://${req.headers.host}/api/docs`);
+                res.redirect(`http://${req.headers.host}`);
             } else {
                 res.redirect(`http://${req.headers.host}/signup`);
             }
