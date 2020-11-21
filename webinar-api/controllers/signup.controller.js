@@ -11,12 +11,21 @@ const getPassportSession = (req) => {
 };
 
 const getSession = (req) => {
-    const result = (req.session) ? req.session : undefined;
+    const result = (req.sessionStore.sessions) ? req.sessionStore.sessions : undefined;
     return result;
 };
 exports.signup = async function(req, res) {
-    const passportUser = getSession(req).passport;
-    const passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
+    console.log(req, "signup")
+    try {
+        const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
+        const passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
+
+    } catch {
+        return res.status(400).send({
+            message: '세션이 잘못되었습니다.'
+        })
+    }
+
     try {
         const param = Joi.object({
             schoolCode: Joi.string().required(),

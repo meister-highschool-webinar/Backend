@@ -20,6 +20,7 @@ const getSession = (req) => {
 
 exports.googleLogin = async function(
     accessToken, refreshToken, profile, cb) {
+    console.log(profile, "profile")
     try {
         const user_email = profile.emails[0].value;
         const userInfo = (await user.findOne({
