@@ -66,7 +66,7 @@ exports.verifyOauthLogin = async function(req, res) {
             if (session['isLogin']) {
                 res.redirect(`${process.env.CLIENT_DOMAIN}`);
             } else {
-                res.redirect(`${process.env.CLIENT_DOMAIN}/signup`);
+                res.redirect(`${process.env.CLIENT_DOMAIN}/signup?email=${session['user_email']}`);
             }
             return;
         }
