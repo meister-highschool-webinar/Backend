@@ -64,13 +64,13 @@ exports.verifyOauthLogin = async function(req, res) {
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
-                res.redirect(`http://${req.headers.host}`);
+                res.redirect(`${process.env.CLIENT_DOMAIN}`);
             } else {
-                res.redirect(`http://${req.headers.host}/signup`);
+                res.redirect(`${process.env.CLIENT_DOMAIN}/signup`);
             }
             return;
         }
-        res.redirect(`http://${req.headers.host}/login`);
+        res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
 
 
     } catch (error) {
