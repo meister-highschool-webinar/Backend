@@ -19,8 +19,6 @@ const getSession = (req) => {
 
 exports.googleLogin = async function(
     accessToken, refreshToken, profile, cb) {
-    // XXX: HACK: DEBUGGING PURPOSE (without mysql db)
-    // XXX: END OF HACK
     try {
         const user_email = profile.emails[0].value;
         const userInfo = await user.findOne({
@@ -66,13 +64,13 @@ exports.verifyOauthLogin = async function(req, res) {
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
-                res.redirect(`${process.env.CLIENT_DOMAIN}`);
+                res.redirect(`http://${req.headers.host}/api/docs`);
             } else {
-                res.redirect(`${process.env.CLIENT_DOMAIN}/signup`);
+                res.redirect(`http://${req.headers.host}/signup`);
             }
             return;
         }
-        res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
+        res.redirect(`http://${req.headers.host}/login`);
 
 
     } catch (error) {
