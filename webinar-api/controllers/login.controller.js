@@ -87,6 +87,7 @@ exports.verifyOauthLogin = async function(req, res) {
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
+                console.log(session, "session")
                 return res.redirect(`${process.env.CLIENT_DOMAIN}`);
 
             } else {
