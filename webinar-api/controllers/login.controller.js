@@ -54,8 +54,14 @@ exports.googleLogin = async function(
             attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
         })).dataValues;
         const accessToken = jwt.sign({
-            ...userInfo_res.dataValues
+            student_name: userInfo_res.student_name,
+            school_name: userInfo_res.name,
+            grade: userInfo_res.grade,
+            class: userInfo_res.class,
+            number: userInfo_res.number,
+            email: userInfo_res.email
         }, process.env.JWT_SALT)
+        console.log(userInfo_res, "user")
         const create_row = await user.update({
             access_token: accessToken
         }, { where: { email: user_email } }).then(result => {
