@@ -38,10 +38,11 @@ exports.googleLogin = async function(
             }).then(result => {
                 return cb(undefined, { user_email, requireSign: true })
             }).catch(err => {
-                res.status(400).send({
+                return res.status(400).send({
                     message: "구글 로그인을 하지 못하였습니다"
                 })
             });
+            return;
 
         }
         if (!userInfo.school_name) {
@@ -53,9 +54,11 @@ exports.googleLogin = async function(
             },
             attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
         })).dataValues;
+        console.log(userInfo_res)
+        console.log(userInfo_res.school_name)
         const accessToken = jwt.sign({
             student_name: userInfo_res.student_name,
-            school_name: userInfo_res.name,
+            school_name: userInfo_res.school_name,
             grade: userInfo_res.grade,
             class: userInfo_res.class,
             number: userInfo_res.number,
@@ -84,18 +87,18 @@ exports.verifyOauthLogin = async function(req, res) {
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
-                res.redirect(`${process.env.CLIENT_DOMAIN}`);
-                return res.status(200).send({ userInfo: session["userInfo"], accessToken: session["accessToken"] });
+                return res.redirect(`${process.env.CLIENT_DOMAIN}`);
+
             } else {
-                res.redirect(`${process.env.CLIENT_DOMAIN}/signup?email=${session['user_email']}`);
+                return res.redirect(`${process.env.CLIENT_DOMAIN}/signup?email=${session['user_email']}`);
             }
-            return;
         }
-        res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
+        return res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
 
 
     } catch (error) {
-        res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
+        console.log(error)
+        return es.redirect(`${process.env.CLIENT_DOMAIN}/login`);
     }
 }
 

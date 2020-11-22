@@ -2,6 +2,7 @@ const { user } = require('../models');
 const Joi = require('joi');
 const getSession = (req) => {
     const result = (req.sessionStore.sessions) ? req.sessionStore.sessions : undefined;
+    console.log(result, "login")
     return result;
 };
 exports.getUsertable = async(req, res) => {
