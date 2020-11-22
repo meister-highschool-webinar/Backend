@@ -14,21 +14,21 @@ const { getWinnerList } = require('../controllers/luckdraw.controller');
 const { authenticateUser } = require('../middlewares/auth.middle');
 const router = Router();
 
-
-
 /**
  * @swagger
- * /auth/google:
- *    get:
- *      tags:
- *          - Login
- *      summary: google OAuth.
- *      description: redirect to google login
- *      responses:
- *        200:
- *          description: '{ statusCode: string, errorMessage: string }'
+ *  paths:
+ *    /auth/logout:
+ *      get:
+ *        tags:
+ *        - "logout"
+ *        responses:
+ *          200:
+ *            description: '{ statusCode: string, errorMessage: string }'
+ *          security:
+ *            - google:
+ *              - profile
+ *              - email
  */
-
 
 
 

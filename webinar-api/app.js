@@ -8,12 +8,15 @@ const cors = require('cors');
 const logger = require('morgan');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-
+const { user } = require('./models');
 const indexRouter = require('./routes');
 const { googleLogin, verifyOauthLogin } = require("./controllers/login.controller");
 
 const app = express();
-
+const getSession = (req) => {
+    const result = (req.sessionStore.sessions) ? req.sessionStore.sessions : undefined;
+    return result;
+};
 app.disable('x-powered-by');
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 app.use(helmet());
@@ -63,9 +66,22 @@ app.get("/auth/google/callback", passport.authenticate("google", {
 }));
 app.get('/auth/verify/oauth', verifyOauthLogin);
 app.get('/auth/logout', function(req, res) {
+    let passportEmail;
+    try {
+        const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
+        passportEmail = (passportUser) ? passportUser["user"]['userInfo']['email'] : undefined
+
+    } catch (e) {
+        return res.status(400).send({
+            message: '세션이 잘못되었습니다.'
+        })
+    }
     req.logout();
     req.session.destroy();
     req.sessionStore.destroy();
+    const create_row = user.update({
+        access_token: null
+    }, { where: { email: passportEmail } })
     res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
 });
 app.use('/api', indexRouter);
