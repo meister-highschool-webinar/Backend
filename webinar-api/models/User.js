@@ -27,6 +27,9 @@ module.exports = (sequelize) => (
         },
         number: {
             type: DataTypes.INTEGER
+        },
+        access_token: {
+            type: DataTypes.STRING
         }
     })
 )

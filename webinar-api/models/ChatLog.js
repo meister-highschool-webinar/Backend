@@ -17,6 +17,9 @@ module.exports = (sequelize) => {
         text: {
             type: DataTypes.TEXT
         },
+        question: {
+            type: DataTypes.BOOLEAN,
+        },
         deleted_time: {
             type: DataTypes.DATE,
             default: sequelize.literal('CURRENT_TIMESTAMP')
@@ -24,13 +27,8 @@ module.exports = (sequelize) => {
         create_time: {
             type: DataTypes.DATE,
         },
-        question: {
-            type: DataTypes.BOOLEAN,
-            default: false
-        },
         deleted_flag: {
             type: DataTypes.BOOLEAN,
-            default: false
         }
     }, {
         tableName: 'chat_log',

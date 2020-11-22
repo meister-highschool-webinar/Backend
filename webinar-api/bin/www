@@ -84,14 +84,7 @@ function onError(error) {
     }
 }
 
-function createRandomString(length = 10) {
-    let text = ''
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    Array(length).forEach(() => {
-        text += possible.charAt(Math.floor(Math.random() * possible.length))
-    })
-    return text
-}
+
 /**
  * Event listener for HTTP server "listening" event.
  */
@@ -113,11 +106,18 @@ io.on('connection', async(socket) => {
     let admin;
     const user_token = socket.request._query['user_token'];
     const admin_token = socket.request._query['admin_token'];
-    if (!user_token) {
-        user = await verifyJWT(user_token, process.env.JWT_SALT);
+    if (user_token) {
+        try {
+            user = await verifyJWT(user_token, process.env.JWT_SALT);
+        } catch (e) {}
+
     }
-    if (!admin_token) {
-        admin = await verifyJWT(admin_token, process.env.JWT_ADMIN_SALT);
+    if (admin_token) {
+        try {
+            admin = await verifyJWT(admin_token, process.env.JWT_ADMIN_SALT);
+        } catch (e) {
+
+        }
     }
 
     io.emit('connected_change', ++connected);
@@ -127,13 +127,14 @@ io.on('connection', async(socket) => {
     });
 
     socket.on('send message', async(text, question) => {
-
+        const q = (question) ? 1 : 0
         if (!user) return;
         const chat = (await chatLog.create({
-            msg_id: createRandomString(),
+            msg_id: Math.random().toString(36).substr(2, 10),
             student_name: user.student_name,
+            question: q,
+            create_time: Date.now(),
             text: xss(text),
-            question: question
         })).dataValues;
 
         chat.school_name = user.school_name.substring(0, 2);
@@ -144,7 +145,7 @@ io.on('connection', async(socket) => {
     socket.on('delete message', async(msgId) => {
         if (!admin) return;
         await chatLog.update({
-            deleted_flag: true,
+            deleted_flag: 1,
             deleted_time: Date.now()
         }, { where: { msg_id: msgId } })
 

@@ -9,7 +9,6 @@ const { user } = require('../models');
 
 const getPassportSession = (req) => {
     const result = req.user;
-    console.log(result)
     return result;
 };
 
@@ -20,7 +19,6 @@ const getSession = (req) => {
 
 exports.googleLogin = async function(
     accessToken, refreshToken, profile, cb) {
-    console.log(profile, "profile")
     try {
         const user_email = profile.emails[0].value;
         const userInfo = (await user.findOne({
@@ -55,7 +53,15 @@ exports.googleLogin = async function(
             },
             attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
         })).dataValues;
-        return cb(undefined, { userInfo: userInfo_res, isLogin: true })
+        const accessToken = jwt.sign({
+            ...userInfo_res.dataValues
+        }, process.env.JWT_SALT)
+        const create_row = await user.update({
+            access_token: accessToken
+        }, { where: { email: user_email } }).then(result => {
+            return cb(undefined, { userInfo: userInfo_res, accessToken, isLogin: true })
+        }).catch(err => { return cb(undefined, {}); });
+
     } catch (error) {
         return cb(undefined, {});
     }
@@ -69,13 +75,11 @@ exports.getSessionInfo = async(req, res) => {
 exports.verifyOauthLogin = async function(req, res) {
     try {
         const session = getPassportSession(req);
-        console.log(session, "session")
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
                 res.redirect(`${process.env.CLIENT_DOMAIN}`);
-                console.log(session["userInfo"], 111)
-                return res.status(200).send(session["userInfo"]);
+                return res.status(200).send({ userInfo: session["userInfo"], accessToken: session["accessToken"] });
             } else {
                 res.redirect(`${process.env.CLIENT_DOMAIN}/signup?email=${session['user_email']}`);
             }

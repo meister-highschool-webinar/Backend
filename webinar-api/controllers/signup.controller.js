@@ -2,11 +2,11 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const web = require('../modules/slack').slack();
+const { verifyJWT } = require("../middlewares/auth.middle");
 
 const { user, schoolCode } = require('../models');
 const getPassportSession = (req) => {
     const result = req.user;
-    console.log(result)
     return result;
 };
 
@@ -15,7 +15,6 @@ const getSession = (req) => {
     return result;
 };
 exports.signup = async function(req, res) {
-    console.log(req, "signup")
     let passportEmail;
     try {
         const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
@@ -79,7 +78,6 @@ exports.signup = async function(req, res) {
             },
             attributes: ['number']
         }).then(result => {
-            console.log(result.dataValues.number)
             if (result.dataValues.number) return res.status(400).send({
                 message: "이메일이 중복된 사용자가 있습니다"
             });
@@ -88,13 +86,23 @@ exports.signup = async function(req, res) {
                 message: "회원가입을 하지 못하였습니다"
             })
         });
+        const accessToken = jwt.sign({
 
+            student_name: student_name,
+            school_name: code.dataValues.name,
+            grade: grade,
+            class: _class,
+            number: number,
+            email: email
+
+        }, process.env.JWT_SALT)
         const create_row = await user.update({
             student_name: student_name,
             school_name: code.dataValues.name,
             grade: grade,
             class: _class,
-            number: number
+            number: number,
+            access_token: accessToken
         }, { where: { email: email } }).then(result => {
             const user_info = {
                 student_name: student_name,
@@ -102,11 +110,9 @@ exports.signup = async function(req, res) {
                 grade: grade,
                 class: _class,
                 number: number,
-                email: email
+                email: email,
+                access_token: accessToken
             }
-            const accessToken = jwt.sign({
-                ...user_info.dataValues
-            }, process.env.JWT_SALT)
             res.status(200).send({
                 userInfo: user_info,
                 accessToken,
@@ -119,7 +125,6 @@ exports.signup = async function(req, res) {
         });
 
     } catch (error) {
-        console.log(error)
         res.status(500).send({
             message: "서버에서 오류가 발생하였습니다."
         })
