@@ -82,7 +82,7 @@ app.get('/auth/logout', function(req, res) {
     const create_row = user.update({
         access_token: null
     }, { where: { email: passportEmail } })
-    res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
+    res.send(200)
 });
 app.use('/api', indexRouter);
 

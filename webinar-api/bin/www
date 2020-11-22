@@ -126,15 +126,16 @@ io.on('connection', async(socket) => {
         io.emit('connected_change', --connected);
     });
 
-    socket.on('send message', async(text, question) => {
-        const q = (question) ? 1 : 0
+    socket.on('send message', async(req) => {
+        console.log(req)
+        const q = (req.question) ? 1 : 0
         if (!user) return;
         const chat = (await chatLog.create({
             msg_id: Math.random().toString(36).substr(2, 10),
             student_name: user.student_name,
             question: q,
             create_time: Date.now(),
-            text: xss(text),
+            text: xss(req.text),
         })).dataValues;
 
         chat.school_name = user.school_name.substring(0, 2);
