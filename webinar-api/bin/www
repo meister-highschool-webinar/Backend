@@ -109,35 +109,43 @@ const { chatLog } = require("../models");
 
 let connected = 0;
 io.on('connection', async(socket) => {
-    if (!socket.request.isAuthenticated()) {
-        const token = socket.request._query['token'];
-        socket.session = await verifyJWT(token, process.env.JWT_ADMIN_SALT);
-        const user = socket.session;
+    let user;
+    let admin;
+    const user_token = socket.request._query['user_token'];
+    const admin_token = socket.request._query['admin_token'];
+    if (!user_token) {
+        user = await verifyJWT(user_token, process.env.JWT_SALT);
         if (!user) return;
     }
+    if (!admin_token) {
+        admin = await verifyJWT(admin_token, process.env.JWT_ADMIN_SALT);
+
+
+    }
+
     io.emit('connected_change', ++connected);
 
     socket.on('disconnect', _ => {
         io.emit('connected_change', --connected);
     });
 
-    socket.on('send message', async(student_name, school_name, text, question) => {
+    socket.on('send message', async(text, question) => {
 
 
         const chat = (await chatLog.create({
             msg_id: createRandomString(),
-            student_name: student_name,
+            student_name: user.student_name,
             text: xss(text),
             question: question
         })).dataValues;
 
-        chat.school_name = school_name.substring(0, 2);
+        chat.school_name = user.school_name.substring(0, 2);
         io.emit('receive message', chat);
 
     });
 
     socket.on('delete message', async(msgId) => {
-
+        if (!admin) return;
         await chatLog.update({
             deleted_flag: true,
             deleted_time: Date.now()

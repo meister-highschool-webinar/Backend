@@ -89,7 +89,6 @@ exports.signup = async function(req, res) {
             })
         });
 
-
         const create_row = await user.update({
             student_name: student_name,
             school_name: code.dataValues.name,
@@ -105,8 +104,12 @@ exports.signup = async function(req, res) {
                 number: number,
                 email: email
             }
+            const accessToken = jwt.sign({
+                ...user_info.dataValues
+            }, process.env.JWT_SALT)
             res.status(200).send({
                 userInfo: user_info,
+                accessToken,
                 message: "회원가입을 성공하였습니다"
             })
         }).catch(err => {
