@@ -31,18 +31,6 @@ const router = Router();
 
 
 
-/**
- * @swagger
- * /api/auth/logout:
- *    get:
- *      tags:
- *          - logout
- *      summary: logout.
- *      responses:
- *        200:
- *          description: '{ statusCode: string, errorMessage: string }'
- */
-// router.get('/logout', AuthHandler.logout);
 
 /**
  * @swagger

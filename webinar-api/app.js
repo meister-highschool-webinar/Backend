@@ -62,7 +62,12 @@ app.get("/auth/google/callback", passport.authenticate("google", {
     successRedirect: '/auth/verify/oauth',
 }));
 app.get('/auth/verify/oauth', verifyOauthLogin);
-
+app.get('/auth/logout', function(req, res) {
+    req.logout();
+    req.session.destroy();
+    req.sessionStore.destroy();
+    res.redirect(`${process.env.CLIENT_DOMAIN}/login`);
+});
 app.use('/api', indexRouter);
 
 app.use(function(req, res, next) {
