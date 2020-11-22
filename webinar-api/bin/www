@@ -115,12 +115,9 @@ io.on('connection', async(socket) => {
     const admin_token = socket.request._query['admin_token'];
     if (!user_token) {
         user = await verifyJWT(user_token, process.env.JWT_SALT);
-        if (!user) return;
     }
     if (!admin_token) {
         admin = await verifyJWT(admin_token, process.env.JWT_ADMIN_SALT);
-
-
     }
 
     io.emit('connected_change', ++connected);
@@ -131,7 +128,7 @@ io.on('connection', async(socket) => {
 
     socket.on('send message', async(text, question) => {
 
-
+        if (!user) return;
         const chat = (await chatLog.create({
             msg_id: createRandomString(),
             student_name: user.student_name,
