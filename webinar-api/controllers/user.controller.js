@@ -40,7 +40,8 @@ exports.getUserInfo = async(req, res) => {
     let passportEmail;
     try {
         const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
-        passportEmail = (passportUser) ? passportUser["user"]['userInfo']['email'] : undefined
+        passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
+
 
     } catch (e) {
         return res.status(400).send({

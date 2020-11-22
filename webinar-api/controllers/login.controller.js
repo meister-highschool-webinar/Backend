@@ -65,7 +65,7 @@ exports.googleLogin = async function(
         const create_row = await user.update({
             access_token: accessToken
         }, { where: { email: user_email } }).then(result => {
-            return cb(undefined, { userInfo: userInfo_res, accessToken, isLogin: true })
+            return cb(undefined, { userInfo: userInfo_res, accessToken, user_email, isLogin: true })
         }).catch(err => { return cb(undefined, {}); });
 
     } catch (error) {

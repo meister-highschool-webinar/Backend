@@ -66,12 +66,16 @@ app.get("/auth/google/callback", passport.authenticate("google", {
 }));
 app.get('/auth/verify/oauth', verifyOauthLogin);
 app.get('/auth/logout', function(req, res) {
+    console.log(req)
     let passportEmail;
     try {
         const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
-        passportEmail = (passportUser) ? passportUser["user"]['userInfo']['email'] : undefined
+        passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
 
+
+        console.log()
     } catch (e) {
+        console.log(e)
         return res.status(400).send({
             message: '세션이 잘못되었습니다.'
         })
