@@ -68,7 +68,7 @@ exports.getUserInfo = async(req, res) => {
                 email
             }
         })).dataValues;
-        res.send({ userInfo });
+        res.send({ userInfo, accessToken: userInfo.access_token });
     } catch (e) {
         res.sendStatus(500);
     }
