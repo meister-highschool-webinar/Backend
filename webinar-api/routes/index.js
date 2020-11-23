@@ -144,37 +144,17 @@ router.get('/winner', getWinnerList);
  *        tags:
  *        - "Webinar"
  *        summary: "user info 구글 세션 필요"
- *        requestBody:
- *          description: 유저정보 필요
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/signup_request'
- *          required: true
  *        responses:
  *          200:
  *            description: 로그인 결과
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/signup_request'
  *          400:
  *            description: 잘못된 데이터
  *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/signup_request'
  *          security:
  *            - google:
  *              - profile
  *              - email
  *          x-codegen-request-body-name: body
- * components:
- *   schemas:
- *      signup_request:
- *       type: object
- *       properties:
- *         email:
- *           type: string
- *           description: 학교 코드
  */
 router.post('/user-info', getUserInfo);
 

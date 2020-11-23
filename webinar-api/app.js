@@ -81,8 +81,8 @@ app.get('/auth/logout', function(req, res) {
         })
     }
     req.logout();
-    req.session.destroy();
-    req.sessionStore.destroy();
+    // req.session.destroy();
+    // req.sessionStore.destroy();
     const create_row = user.update({
         access_token: null
     }, { where: { email: passportEmail } })

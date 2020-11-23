@@ -50,28 +50,14 @@ exports.getUserInfo = async(req, res) => {
         })
     }
     try {
-        const param = Joi.object({
-            email: Joi.string().required(),
-        });
-        if (param.validate(req.body).error) {
-            res.status(400).send({
-                message: '입력값에 공란이 존재합니다.'
-            })
-        }
-
-        const {
-            email
-        } = req.body;
-        if (email != passportEmail) return res.status(400).send({
-            message: "요청하신 이메일이 잘못되었습니다"
-        });
         const userInfo = (await user.findOne({
             where: {
-                email
+                email: passportEmail
             }
         })).dataValues;
         res.send({ userInfo, accessToken: userInfo.access_token });
     } catch (e) {
+        console.log(e)
         res.sendStatus(500);
     }
 }
