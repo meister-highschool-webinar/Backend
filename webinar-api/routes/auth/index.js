@@ -333,7 +333,7 @@ router.post('/timetable', adminAuth, inputTimetable);
  *          required: true
  *          schema:
  *            type: string
- *            enum: [timetable, chatlog]
+ *            enum: [timetable, chatlog, user, question]
  *        responses:
  *          200:
  *            description: "export 성공"
