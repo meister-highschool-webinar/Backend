@@ -40,7 +40,14 @@ exports.getUsertable = async(req, res) => {
 exports.getUserInfo = async(req, res) => {
     let passportEmail;
     try {
-        const passportUser = JSON.parse(Object.values(getSession(req))[0]).passport;
+        let passportUser = undefined;
+        const key = `"user_email":"${req.body.email}"`;
+        for (const i of Object.values(getSession(req))) {
+            if (i.startsWith(key)>-1) {
+                passportUser = JSON.parse(i).passport;
+                break;
+            }
+        }
         passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
 
 
