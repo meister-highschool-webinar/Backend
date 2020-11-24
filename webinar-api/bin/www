@@ -138,7 +138,7 @@ io.on('connection', async(socket) => {
             text: xss(req.text),
         })).dataValues;
 
-        chat.school_name = user.school_name.substring(0, 2);
+        chat.school_name = user.school_name;
         io.emit('receive message', chat);
 
     });
