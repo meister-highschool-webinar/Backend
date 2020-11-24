@@ -43,7 +43,7 @@ exports.getUserInfo = async(req, res) => {
         let passportUser = undefined;
         const key = `"user_email":"${req.body.email}"`;
         for (const i of Object.values(getSession(req))) {
-            if (i.startsWith(key)>-1) {
+            if (i.startsWith(key) > -1) {
                 passportUser = JSON.parse(i).passport;
                 break;
             }
@@ -62,6 +62,7 @@ exports.getUserInfo = async(req, res) => {
                 email: passportEmail
             }
         })).dataValues;
+        userInfo.student_id = userInfo.grade.toString() + userInfo.class.toString() + userInfo.number.toString()
         res.send({ userInfo, accessToken: userInfo.access_token });
     } catch (e) {
         console.log(e)

@@ -139,6 +139,7 @@ io.on('connection', async(socket) => {
         })).dataValues;
 
         chat.school_name = user.school_name.substring(0, 2);
+        chat.student_id = user.grade.toString() + user.class.toString() + user.number.toString()
         io.emit('receive message', chat);
 
     });
