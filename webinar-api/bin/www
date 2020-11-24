@@ -138,8 +138,12 @@ io.on('connection', async(socket) => {
             text: xss(req.text),
         })).dataValues;
 
+<<<<<<< HEAD
         chat.school_name = user.school_name.substring(0, 2);
         chat.student_id = user.grade.toString() + user.class.toString() + user.number.toString()
+=======
+        chat.school_name = user.school_name;
+>>>>>>> f9608bf24057457e1460663a91fc4850e7f7e9a7
         io.emit('receive message', chat);
 
     });
