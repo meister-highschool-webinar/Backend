@@ -144,14 +144,15 @@ io.on('connection', async(socket) => {
 
     });
 
-    socket.on('delete message', async(msgId) => {
+    socket.on('delete message', async(msg) => {
+
         if (!admin) return;
         await chatLog.update({
             deleted_flag: 1,
             deleted_time: Date.now()
-        }, { where: { msg_id: msgId } })
+        }, { where: { msg_id: msg.msgId } })
 
-        io.emit('delete receive message', msgId);
+        io.emit('delete receive message', msg.msgId);
 
     });
 });
