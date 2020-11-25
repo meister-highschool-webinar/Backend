@@ -11,6 +11,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { user } = require('./models');
 const indexRouter = require('./routes');
 const { googleLogin, verifyOauthLogin } = require("./controllers/login.controller");
+const { verifyJWT } = require("./middlewares/auth.middle");
 
 const app = express();
 const getSession = (req) => {
@@ -65,22 +66,38 @@ app.get("/auth/google/callback", passport.authenticate("google", {
     successRedirect: '/auth/verify/oauth',
 }));
 app.get('/auth/verify/oauth', verifyOauthLogin);
-app.get('/auth/logout', function(req, res) {
-    console.log(req)
-    let passportEmail;
+app.post('/auth/logout', async function(req, res) {
+    const accessToken = req.body.access_token;
+    let foundUser = undefined;
     try {
-        let passportUser = undefined;
-        const key = `"user_email":"${req.body.email}"`;
-        for (const i of Object.values(getSession(req))) {
-            if (i.startsWith(key)>-1) {
-                passportUser = JSON.parse(i).passport;
-                break;
+        foundUser = await verifyJWT(accessToken, process.env.JWT_SALT);
+    } catch (e) {
+        return res.status(400).send({
+            message: '입력된 토큰이 잘못되었습니다.'
+        })
+    }
+    if (!foundUser || !foundUser.email) {
+        return res.status(400).send({
+            message: '입력된 토큰이 잘못되었습니다.'
+        })
+    }
+
+    // SESSION REMOVAL;
+    const ss = getSession(req);
+    let passportEmail = foundUser.email;
+    let sessionId = undefined;
+    try {
+        const key = `"user_email":"${passportEmail}"`;
+        for (const [_sessionId, _sessionValue] of Object.entries(ss)) {
+            if (_sessionValue.startsWith(key)>-1) {
+                try {
+                    JSON.parse(_sessionValue).passport;
+                    sessionId = _sessionId;
+                    break;
+                } catch (e) {
+                }
             }
         }
-        passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
-
-
-        console.log()
     } catch (e) {
         console.log(e)
         return res.status(400).send({
@@ -88,8 +105,10 @@ app.get('/auth/logout', function(req, res) {
         })
     }
     req.logout();
-    // req.session.destroy();
-    // req.sessionStore.destroy();
+    if (!!sessionId) {
+        ss[sessionId].destroy();
+    }
+
     const create_row = user.update({
         access_token: null
     }, { where: { email: passportEmail } })
