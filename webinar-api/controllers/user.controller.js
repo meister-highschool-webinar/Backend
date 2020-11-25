@@ -1,4 +1,4 @@
-const { user } = require('../models');
+const { user, schoolCode } = require('../models');
 const Joi = require('joi');
 const getSession = (req) => {
     const result = (req.sessionStore.sessions) ? req.sessionStore.sessions : undefined;
@@ -62,6 +62,18 @@ exports.getUserInfo = async(req, res) => {
                 email: passportEmail
             }
         })).dataValues;
+        console.log(userInfo.school_name)
+        const school = (await schoolCode.findOne({
+            where: {
+                name: userInfo.school_name
+            }
+        }));
+        if (!school) {
+            return res.status(400).send({
+                message: '학교 이름이 잘못되었습니다.'
+            })
+        }
+        userInfo.school_code = school.dataValues.code
         userInfo.student_id = userInfo.grade.toString() + userInfo.class.toString() + userInfo.number.toString()
         res.send({ userInfo, accessToken: userInfo.access_token });
     } catch (e) {
