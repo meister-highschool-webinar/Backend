@@ -1,4 +1,5 @@
 const { user, schoolCode } = require('../models');
+const { verifyJWT } = require("../middlewares/auth.middle");
 const Joi = require('joi');
 const getSession = (req) => {
     const result = (req.sessionStore.sessions) ? req.sessionStore.sessions : undefined;
@@ -38,24 +39,22 @@ exports.getUsertable = async(req, res) => {
     }
 }
 exports.getUserInfo = async(req, res) => {
-    let passportEmail;
+    const accessToken = req.body.access_token;
+    let foundUser = undefined;
     try {
-        let passportUser = undefined;
-        const key = `"user_email":"${req.body.email}"`;
-        for (const i of Object.values(getSession(req))) {
-            if (i.startsWith(key) > -1) {
-                passportUser = JSON.parse(i).passport;
-                break;
-            }
-        }
-        passportEmail = (passportUser) ? passportUser["user"]['user_email'] : undefined
-
-
+        foundUser = await verifyJWT(accessToken, process.env.JWT_SALT);
     } catch (e) {
         return res.status(400).send({
-            message: '세션이 잘못되었습니다.'
+            message: '입력된 토큰이 잘못되었습니다.'
         })
     }
+    if (!foundUser || !foundUser.email) {
+        return res.status(400).send({
+            message: '입력된 토큰이 잘못되었습니다.'
+        })
+    }
+
+    let passportEmail = foundUser.email;
     try {
         const userInfo = (await user.findOne({
             where: {

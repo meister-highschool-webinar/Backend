@@ -20,7 +20,7 @@ exports.signup = async function(req, res) {
         let passportUser = undefined;
         const key = `"user_email":"${req.body.email}"`;
         for (const i of Object.values(getSession(req))) {
-            if (i.startsWith(key)>-1) {
+            if (i.indexOf(key)>-1) {
                 passportUser = JSON.parse(i).passport;
                 break;
             }

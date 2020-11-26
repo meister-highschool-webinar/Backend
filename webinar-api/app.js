@@ -89,7 +89,7 @@ app.post('/auth/logout', async function(req, res) {
     try {
         const key = `"user_email":"${passportEmail}"`;
         for (const [_sessionId, _sessionValue] of Object.entries(ss)) {
-            if (_sessionValue.startsWith(key)>-1) {
+            if (_sessionValue.indexOf(key)>-1) {
                 try {
                     JSON.parse(_sessionValue).passport;
                     sessionId = _sessionId;
