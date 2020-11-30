@@ -87,7 +87,7 @@ exports.verifyOauthLogin = async function(req, res) {
         if (session) {
             // 회원가입 필요 없음
             if (session['isLogin']) {
-                return res.redirect(`${process.env.CLIENT_DOMAIN}`);
+                return res.redirect(`${process.env.CLIENT_DOMAIN}/loginSuccess?accessToken=${session['accessToken']}`);
 
             } else {
                 return res.redirect(`${process.env.CLIENT_DOMAIN}/signup?email=${session['user_email']}`);
