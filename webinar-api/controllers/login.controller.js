@@ -4,7 +4,7 @@ const Joi = require('joi');
 const web = require('../modules/slack').slack();
 const randtoken = require('rand-token')
 
-const { user } = require('../models');
+const { user, accessLog } = require('../models');
 
 
 const getPassportSession = (req) => {
@@ -52,7 +52,7 @@ exports.googleLogin = async function(
             where: {
                 email: user_email
             },
-            attributes: ['student_name', 'email', 'school_name', "number", "grade", "class"]
+            attributes: ['id', 'student_name', 'email', 'school_name', "number", "grade", "class"]
         })).dataValues;
         console.log(userInfo_res)
         console.log(userInfo_res.school_name)
@@ -68,6 +68,13 @@ exports.googleLogin = async function(
         const create_row = await user.update({
             access_token: accessToken
         }, { where: { email: user_email } }).then(result => {
+            accessLog.create({
+                student_id: userInfo_res.id,
+                student_name: userInfo_res.student_name,
+                status: "login",
+                create_time: Date.now(),
+                ip: ""
+            })
             return cb(undefined, { userInfo: userInfo_res, accessToken, user_email, isLogin: true })
         }).catch(err => { return cb(undefined, {}); });
 

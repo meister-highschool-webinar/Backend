@@ -5,6 +5,7 @@ const User = require('./User');
 const Timetable = require('./Timetable');
 const WebinarTable = require('./WebinarTable');
 const SchoolCode = require('./SchoolCode')
+const AccessLog = require('./AccessLog')
 
 const sequelize = new Sequelize({
     username: process.env.MARIADB_ID,
@@ -23,9 +24,10 @@ const sequelize = new Sequelize({
 });
 
 const chatLog = ChatLog(sequelize);
+const accessLog = AccessLog(sequelize);
 const user = User(sequelize);
 const timetable = Timetable(sequelize);
 const webinarTable = WebinarTable(sequelize);
 const schoolCode = SchoolCode(sequelize)
 
-module.exports = { Sequelize, sequelize, chatLog, user, timetable, webinarTable, schoolCode }
+module.exports = { Sequelize, sequelize, chatLog, user, timetable, webinarTable, schoolCode, accessLog }

@@ -6,7 +6,7 @@ const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 const { deleteUser, getUsertable } = require("../../controllers/user.controller");
-const { removeAllChat, removeAllQnaChat } = require("../../controllers/chat.controller");
+const { removeAllChat, removeAllQnaChat, refreshPage, getAllChat } = require("../../controllers/chat.controller");
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const luckdraw = require("./luckdraw");
@@ -461,12 +461,12 @@ router.get('/users', adminAuth, getUsertable);
  *          500:
  *            description: "소켓 연결 에러"
  */
-router.get('/remove_all_chat', adminAuth, removeAllQnaChat);
+router.get('/remove_all_chat', adminAuth, removeAllChat);
 
 /**
  * @swagger
  *  paths:
- *    /api/auth/remove_all_qna_chat:
+ *    /api/auth/remove_all_qna:
  *      get:
  *        tags:
  *        - "Webinar"
@@ -482,8 +482,50 @@ router.get('/remove_all_chat', adminAuth, removeAllQnaChat);
  *          500:
  *            description: "소켓 연결 에러"
  */
-router.get('/remove_all_qna_chat', adminAuth, removeAllChat);
+router.get('/remove_all_qna', adminAuth, removeAllQnaChat);
 
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/refresh_page:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 강제 새로고침 요청"
+ *        description: "웨비나 강제 새로고침 요청합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        responses:
+ *          200:
+ *            description: "웨비나 유저 전체 질문 채팅 삭제 요청"
+ *          500:
+ *            description: "소켓 연결 에러"
+ */
+router.get('/refresh_page', adminAuth, refreshPage);
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/get_all_chat:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 전체 채팅목록 가져오기"
+ *        description: "웨비나 전체 채팅목록 가져오기"
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        responses:
+ *          200:
+ *            description: "웨비나 유저 전체 질문 채팅 삭제 요청"
+ *          500:
+ *            description: "소켓 연결 에러"
+ */
+router.get('/get_all_chat', adminAuth, getAllChat);
 
 /**
  * @swagger
