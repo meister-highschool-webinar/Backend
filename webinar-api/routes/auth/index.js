@@ -6,6 +6,7 @@ const { refresh, me } = require("../../controllers/refresh.controller")
 const { inputTimetable } = require('../../controllers/timetable.controller');
 const { newWebinar } = require("../../controllers/webinar.controller");
 const { deleteUser, getUsertable } = require("../../controllers/user.controller");
+const { removeAllChat, removeAllQnaChat } = require("../../controllers/chat.controller");
 const { adminAuth } = require('../../middlewares/auth.middle');
 
 const luckdraw = require("./luckdraw");
@@ -438,6 +439,50 @@ router.post('/signup', signup);
  *            description: "DB 연결 에러"
  */
 router.get('/users', adminAuth, getUsertable);
+
+
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/remove_all_chat:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 유저 전체 채팅 삭제 요청"
+ *        description: "웨비나 유저 전체 채팅 삭제 요청합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        responses:
+ *          200:
+ *            description: "웨비나 유저 전체 채팅 삭제 요청"
+ *          500:
+ *            description: "소켓 연결 에러"
+ */
+router.get('/remove_all_chat', adminAuth, removeAllQnaChat);
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/auth/remove_all_qna_chat:
+ *      get:
+ *        tags:
+ *        - "Webinar"
+ *        summary: "웨비나 유저 전체 질문 채팅 삭제 요청"
+ *        description: "웨비나 유저 질문 전체 채팅 삭제 요청합니다."
+ *        produces:
+ *        - "application/json"
+ *        parameters:
+ *        - $ref: "#/definitions/x-access-token"
+ *        responses:
+ *          200:
+ *            description: "웨비나 유저 전체 질문 채팅 삭제 요청"
+ *          500:
+ *            description: "소켓 연결 에러"
+ */
+router.get('/remove_all_qna_chat', adminAuth, removeAllChat);
 
 
 /**
