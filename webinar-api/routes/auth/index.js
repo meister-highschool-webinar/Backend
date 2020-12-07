@@ -506,26 +506,7 @@ router.get('/remove_all_qna', adminAuth, removeAllQnaChat);
  */
 router.get('/refresh_page', adminAuth, refreshPage);
 
-/**
- * @swagger
- *  paths:
- *    /api/auth/get_all_chat:
- *      get:
- *        tags:
- *        - "Webinar"
- *        summary: "웨비나 전체 채팅목록 가져오기"
- *        description: "웨비나 전체 채팅목록 가져오기"
- *        produces:
- *        - "application/json"
- *        parameters:
- *        - $ref: "#/definitions/x-access-token"
- *        responses:
- *          200:
- *            description: "웨비나 유저 전체 질문 채팅 삭제 요청"
- *          500:
- *            description: "소켓 연결 에러"
- */
-router.get('/get_all_chat', adminAuth, getAllChat);
+
 
 /**
  * @swagger

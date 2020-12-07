@@ -8,6 +8,7 @@ const { getTimetable } = require("../controllers/timetable.controller");
 const { googleLogin } = require("../controllers/login.controller");
 const { getWebinar } = require("../controllers/webinar.controller");
 const { getUserInfo } = require("../controllers/user.controller");
+const { getAllChat } = require("../controllers/chat.controller");
 
 const { qna } = require("../controllers/survey.controllers");
 const { getWinnerList } = require('../controllers/luckdraw.controller');
@@ -157,5 +158,27 @@ router.get('/winner', getWinnerList);
  *          x-codegen-request-body-name: body
  */
 router.post('/user-info', getUserInfo);
+
+/**
+ * @swagger
+ *  paths:
+ *    /api/get_all_chat:
+ *      get:
+ *        tags:
+ *        - "get_all_chat"
+ *        summary: "user info 구글 세션 필요"
+ *        responses:
+ *          200:
+ *            description: 로그인 결과
+ *          400:
+ *            description: 잘못된 데이터
+ *            application/json:
+ *          security:
+ *            - google:
+ *              - profile
+ *              - email
+ *          x-codegen-request-body-name: body
+ */
+router.get('/get_all_chat', getAllChat);
 
 module.exports = router;

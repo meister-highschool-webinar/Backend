@@ -45,9 +45,8 @@ exports.getAllChat = async(req, res) => {
                 deleted_flag: null
             }
         }));
-        io().emit('refresh_page', { chatList: chat })
         return res.status(200).send({
-            msg: '성공적으로 전체 채팅로그를 보냈습니다',
+            chatList: chat,
             msgId: 200
         })
     } catch (e) {
